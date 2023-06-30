@@ -4,7 +4,8 @@ class TripOverviewState extends Equatable {
   const TripOverviewState(
       {required this.currentSelectedDay,
       required this.days,
-      required this.trip});
+      required this.trip,
+       });
 
   final Day currentSelectedDay;
   final List<Day> days;

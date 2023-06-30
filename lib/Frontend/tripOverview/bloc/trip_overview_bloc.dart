@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 import '../../../Backend/api/models/day.dart';
 import '../../../Backend/api/models/trip.dart';
@@ -23,9 +24,32 @@ class TripOverviewBloc extends Bloc<TripOverviewEvent, TripOverviewState> {
     on<IncrementCurrentDay>(_incrementCurrentDay);
     on<DecrementCurrentDay>(_decrementCurrentDay);
     on<TripOverviewSubscriptionRequest>(_onSubscriptionRequested);
+    on<SelectDayFinished>(_selectDayFinished);
+    on<InitTripOverview>((event, emit) {
+      final dayIndex = state.days.indexWhere((element) =>
+          DateUtils.isSameDay(element.day, DateTime.now()));
+      if (dayIndex >= 0) {
+        emit(
+          state.copyWith(
+              currentSelectedDay: state.days[dayIndex]),
+        );
+      }
+    },);
   }
 
   final Repo _repository;
+  Future<void> _selectDayFinished(
+      SelectDayFinished event, Emitter<TripOverviewState> emit) async {
+
+    final dayIndex = state.days.indexWhere((element) =>
+        DateUtils.isSameDay(element.day, event.day));
+    if (dayIndex >= 0) {
+      emit(
+        state.copyWith(
+            currentSelectedDay: state.days[dayIndex]),
+      );
+    }
+  }
 
   Future<void> _onSubscriptionRequested(
     TripOverviewSubscriptionRequest event,

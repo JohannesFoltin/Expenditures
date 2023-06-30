@@ -1,3 +1,4 @@
+import 'package:expenditures/Backend/api/models/day.dart';
 import 'package:expenditures/Frontend/editExpenditure/editExpenditure_View.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,15 +13,32 @@ class TripOverview extends StatelessWidget {
   final Trip trip;
   static MaterialPageRoute<void> route(Trip strip) {
     return MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (context) => TripOverview(trip: strip),);
+      fullscreenDialog: true,
+      builder: (context) => TripOverview(trip: strip),
+    );
+  }
+
+  Future<DateTime> _dayPicker(BuildContext context, DateTime startDay,
+      DateTime startstartDay, DateTime endDay) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: startDay,
+      firstDate: startstartDay,
+      lastDate: endDay,
+    );
+    if (picked != null) {
+      return picked;
+    } else {
+      return startDay;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TripOverviewBloc(context.read<Repo>(), trip)
-        ..add(const TripOverviewSubscriptionRequest()),
+        ..add(const TripOverviewSubscriptionRequest())
+        ..add(const InitTripOverview()),
       child: BlocBuilder<TripOverviewBloc, TripOverviewState>(
         builder: (context, state) {
           return Scaffold(
@@ -32,7 +50,22 @@ class TripOverview extends StatelessWidget {
                 }),
             appBar: AppBar(
                 leading: const SizedBox.shrink(),
-                title: Text(state.currentSelectedDay.day.toString())),
+                actions: [
+                  IconButton(
+                      onPressed: () => context
+                          .read<TripOverviewBloc>()
+                          .add(SelectDayFinished(day: DateTime.now())),
+                      icon: const Icon(Icons.today))
+                ],
+                title: TextButton(
+                    onPressed: () {
+                      _dayPicker(context, state.currentSelectedDay.day,
+                              state.days.first.day, state.days.last.day)
+                          .then((value) => context
+                              .read<TripOverviewBloc>()
+                              .add(SelectDayFinished(day: value)));
+                    },
+                    child: Text(state.currentSelectedDay.day.toString()))),
             body: Column(
               children: [
                 Expanded(
@@ -43,30 +76,46 @@ class TripOverview extends StatelessWidget {
                       if (details.primaryVelocity! > sensitivity) {
                         context
                             .read<TripOverviewBloc>()
-                            .add(const DecrementCurrentDay());
+                            .add(const IncrementCurrentDay());
                       }
                       // Swiping in left direction.
                       if (details.primaryVelocity! < sensitivity) {
                         context
                             .read<TripOverviewBloc>()
-                            .add(const IncrementCurrentDay());
+                            .add(const DecrementCurrentDay());
                       }
                     },
                     child: Column(
                       children: [
-                        Container(
-                          color: Colors.red,
-                          child: Center(
-                            child: Text(state.days.length.toString()),
-                          ),
-                        ),
                         SingleChildScrollView(
                           physics: const AlwaysScrollableScrollPhysics(),
                           child: Column(
                             children: [
                               for (final expenditure
                                   in state.currentSelectedDay.expenditures)
-                                Text(expenditure.name)
+                                Card(
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 52,
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15),
+                                              child: Text(expenditure.name)),
+                                          Container(
+                                              padding: const EdgeInsets.only(
+                                                  right: 15),
+                                              child: Text(
+                                                  "${expenditure.value}€")),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
                             ],
                           ),
                         )
