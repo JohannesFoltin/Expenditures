@@ -23,7 +23,6 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
         ) {
     on<IncrementCurrentDay>(_incrementCurrentDay);
     on<DecrementCurrentDay>(_decrementCurrentDay);
-    on<TripOverviewSubscriptionRequest>(_onSubscriptionRequested);
     on<SelectDayFinished>(_selectDayFinished);
     on<InitTripOverview>((event, emit) {
       final dayIndex = state.days.indexWhere((element) =>
@@ -38,6 +37,7 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
   }
 
   final Repo _repository;
+
   Future<void> _selectDayFinished(
       SelectDayFinished event, Emitter<DayOverviewState> emit) async {
 
@@ -49,26 +49,6 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
             currentSelectedDay: state.days[dayIndex]),
       );
     }
-  }
-
-  Future<void> _onSubscriptionRequested(
-    TripOverviewSubscriptionRequest event,
-    Emitter<DayOverviewState> emit,
-  ) async {
-    await emit.forEach<List<Trip>>(
-      _repository.getTrips(),
-      onData: (trips) {
-        final indexTrip =
-            trips.indexWhere((element) => element.id == state.trip.id);
-        if (indexTrip >= 0) {
-          return state.copyWith(days: trips[indexTrip].days);
-        }
-        return state;
-      },
-      // onError: (_, __) => state.copyWith(
-      //   trainingEditorStatus: TrainingOverviewStatus.failure,
-      // ),
-    );
   }
 
   Future<void> _incrementCurrentDay(

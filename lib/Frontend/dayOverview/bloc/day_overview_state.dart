@@ -16,12 +16,12 @@ class DayOverviewState extends Equatable {
 
   DayOverviewState copyWith({
     Day? currentSelectedDay,
-    List<Day>? days,
+    List<Day> Function()? days,
     Trip? trip,
   }) {
     return DayOverviewState(
       currentSelectedDay: currentSelectedDay ?? this.currentSelectedDay,
-      days: days ?? this.days,
+      days: days != null ? days() : this.days,
       trip: trip ?? this.trip,
     );
   }

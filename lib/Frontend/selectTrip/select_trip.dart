@@ -1,4 +1,5 @@
 import 'package:expenditures/Backend/repo/repo.dart';
+import 'package:expenditures/Frontend/tripOverview/tripOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +27,8 @@ class SelectTrip extends StatelessWidget {
                 for (final trip in state.trips)
                   TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(TripOverview.route(trip));
+                        Navigator.of(context)
+                            .push(TripOverviewView.route(trip: trip));
                       },
                       onLongPress: () => context
                           .read<SelectTripBloc>()

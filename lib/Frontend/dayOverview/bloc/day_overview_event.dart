@@ -4,12 +4,6 @@ abstract class DayOverviewEvent extends Equatable {
   const DayOverviewEvent();
 
 }
-class TripOverviewSubscriptionRequest extends DayOverviewEvent{
-  const TripOverviewSubscriptionRequest();
-  @override
-  List<Object?> get props => [];
-
-}
 class InitTripOverview extends DayOverviewEvent{
   const InitTripOverview();
 
