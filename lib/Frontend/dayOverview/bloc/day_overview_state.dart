@@ -1,7 +1,7 @@
-part of 'trip_overview_bloc.dart';
+part of 'day_overview_bloc.dart';
 
-class TripOverviewState extends Equatable {
-  const TripOverviewState(
+class DayOverviewState extends Equatable {
+  const DayOverviewState(
       {required this.currentSelectedDay,
       required this.days,
       required this.trip,
@@ -14,12 +14,12 @@ class TripOverviewState extends Equatable {
   @override
   List<Object?> get props => [trip,currentSelectedDay, days];
 
-  TripOverviewState copyWith({
+  DayOverviewState copyWith({
     Day? currentSelectedDay,
     List<Day>? days,
     Trip? trip,
   }) {
-    return TripOverviewState(
+    return DayOverviewState(
       currentSelectedDay: currentSelectedDay ?? this.currentSelectedDay,
       days: days ?? this.days,
       trip: trip ?? this.trip,

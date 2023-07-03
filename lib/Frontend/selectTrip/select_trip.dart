@@ -2,7 +2,7 @@ import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../tripOverview/tripOverview_View.dart';
+import '../dayOverview/dayOverview_View.dart';
 import 'bloc/select_trip_bloc.dart';
 
 class SelectTrip extends StatelessWidget {

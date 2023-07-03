@@ -8,14 +8,14 @@ import '../../../Backend/api/models/day.dart';
 import '../../../Backend/api/models/trip.dart';
 import '../../../Backend/repo/repo.dart';
 
-part 'trip_overview_event.dart';
-part 'trip_overview_state.dart';
+part 'day_overview_event.dart';
+part 'day_overview_state.dart';
 
-class TripOverviewBloc extends Bloc<TripOverviewEvent, TripOverviewState> {
-  TripOverviewBloc(Repo repository, Trip trip)
+class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
+  DayOverviewBloc(Repo repository, Trip trip)
       : _repository = repository,
         super(
-          TripOverviewState(
+          DayOverviewState(
             trip: trip,
             currentSelectedDay: trip.days.first,
             days: trip.days,
@@ -39,7 +39,7 @@ class TripOverviewBloc extends Bloc<TripOverviewEvent, TripOverviewState> {
 
   final Repo _repository;
   Future<void> _selectDayFinished(
-      SelectDayFinished event, Emitter<TripOverviewState> emit) async {
+      SelectDayFinished event, Emitter<DayOverviewState> emit) async {
 
     final dayIndex = state.days.indexWhere((element) =>
         DateUtils.isSameDay(element.day, event.day));
@@ -53,7 +53,7 @@ class TripOverviewBloc extends Bloc<TripOverviewEvent, TripOverviewState> {
 
   Future<void> _onSubscriptionRequested(
     TripOverviewSubscriptionRequest event,
-    Emitter<TripOverviewState> emit,
+    Emitter<DayOverviewState> emit,
   ) async {
     await emit.forEach<List<Trip>>(
       _repository.getTrips(),
@@ -72,7 +72,7 @@ class TripOverviewBloc extends Bloc<TripOverviewEvent, TripOverviewState> {
   }
 
   Future<void> _incrementCurrentDay(
-      IncrementCurrentDay event, Emitter<TripOverviewState> emit) async {
+      IncrementCurrentDay event, Emitter<DayOverviewState> emit) async {
     final dateIndex =
         state.days.indexWhere((element) => element == state.currentSelectedDay);
     if ((dateIndex >= 0) && (dateIndex < state.days.length)) {
@@ -81,7 +81,7 @@ class TripOverviewBloc extends Bloc<TripOverviewEvent, TripOverviewState> {
   }
 
   Future<void> _decrementCurrentDay(
-      DecrementCurrentDay event, Emitter<TripOverviewState> emit) async {
+      DecrementCurrentDay event, Emitter<DayOverviewState> emit) async {
     final dateIndex =
         state.days.indexWhere((element) => element == state.currentSelectedDay);
     if ((dateIndex >= 0) && (dateIndex > 0)) {

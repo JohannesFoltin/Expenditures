@@ -1,11 +1,10 @@
-import 'package:expenditures/Backend/api/models/day.dart';
+import 'package:expenditures/Frontend/dayOverview/bloc/day_overview_bloc.dart';
 import 'package:expenditures/Frontend/editExpenditure/editExpenditure_View.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../Backend/api/models/trip.dart';
 import '../../Backend/repo/repo.dart';
-import 'bloc/trip_overview_bloc.dart';
 
 class TripOverview extends StatelessWidget {
   const TripOverview({required this.trip, super.key});
@@ -36,24 +35,29 @@ class TripOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TripOverviewBloc(context.read<Repo>(), trip)
+      create: (context) => DayOverviewBloc(context.read<Repo>(), trip)
         ..add(const TripOverviewSubscriptionRequest())
         ..add(const InitTripOverview()),
-      child: BlocBuilder<TripOverviewBloc, TripOverviewState>(
+      child: BlocBuilder<DayOverviewBloc, DayOverviewState>(
         builder: (context, state) {
           return Scaffold(
             floatingActionButton: FloatingActionButton(
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  Navigator.of(context).push(EditExpenditureView.route(
-                      state.trip, state.currentSelectedDay));
+                  Navigator.of(context).push(
+                    EditExpenditureView.route(
+                      state.trip,
+                      state.currentSelectedDay,
+                      null,
+                    ),
+                  );
                 }),
             appBar: AppBar(
                 leading: const SizedBox.shrink(),
                 actions: [
                   IconButton(
                       onPressed: () => context
-                          .read<TripOverviewBloc>()
+                          .read<DayOverviewBloc>()
                           .add(SelectDayFinished(day: DateTime.now())),
                       icon: const Icon(Icons.today))
                 ],
@@ -62,7 +66,7 @@ class TripOverview extends StatelessWidget {
                       _dayPicker(context, state.currentSelectedDay.day,
                               state.days.first.day, state.days.last.day)
                           .then((value) => context
-                              .read<TripOverviewBloc>()
+                              .read<DayOverviewBloc>()
                               .add(SelectDayFinished(day: value)));
                     },
                     child: Text(state.currentSelectedDay.day.toString()))),
@@ -75,48 +79,59 @@ class TripOverview extends StatelessWidget {
                       // Swiping in right direction.
                       if (details.primaryVelocity! > sensitivity) {
                         context
-                            .read<TripOverviewBloc>()
+                            .read<DayOverviewBloc>()
                             .add(const IncrementCurrentDay());
                       }
                       // Swiping in left direction.
                       if (details.primaryVelocity! < sensitivity) {
                         context
-                            .read<TripOverviewBloc>()
+                            .read<DayOverviewBloc>()
                             .add(const DecrementCurrentDay());
                       }
                     },
                     child: Column(
                       children: [
-                        SingleChildScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          child: Column(
-                            children: [
-                              for (final expenditure
-                                  in state.currentSelectedDay.expenditures)
-                                Card(
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    height: 52,
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                              padding: const EdgeInsets.only(
-                                                  left: 15),
-                                              child: Text(expenditure.name)),
-                                          Container(
-                                              padding: const EdgeInsets.only(
-                                                  right: 15),
-                                              child: Text(
-                                                  "${expenditure.value}€")),
-                                        ],
+                        Expanded(
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Column(
+                              children: [
+                                for (final expenditure
+                                    in state.currentSelectedDay.expenditures)
+                                  GestureDetector(
+                                    onTap: () => Navigator.of(context).push(
+                                      EditExpenditureView.route(
+                                        state.trip,
+                                        state.currentSelectedDay,
+                                        expenditure,
                                       ),
                                     ),
-                                  ),
-                                )
-                            ],
+                                    child: Card(
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 52,
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  padding: const EdgeInsets.only(
+                                                      left: 15),
+                                                  child: Text(expenditure.name)),
+                                              Container(
+                                                  padding: const EdgeInsets.only(
+                                                      right: 15),
+                                                  child: Text(
+                                                      "${expenditure.value}€")),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                              ],
+                            ),
                           ),
                         )
                       ],

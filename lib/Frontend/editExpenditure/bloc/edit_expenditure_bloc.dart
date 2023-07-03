@@ -7,6 +7,7 @@ import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/day.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
+import 'package:uuid/uuid.dart';
 
 part 'edit_expenditure_event.dart';
 part 'edit_expenditure_state.dart';
@@ -22,6 +23,11 @@ class EditExpenditureBloc
   })  : _repository = repository, _day = day,_trip = trip,
         super(EditExpenditureState(
           initialExpenditure: expenditure,
+          name: expenditure?.name ?? '',
+          description: expenditure?.description ?? '',
+          value: expenditure?.value ?? 0,
+          paidWithCard: expenditure?.paidWithCard ?? true,
+          directExpenditure: expenditure?.directExpenditure ?? true,
         )) {
     on<NameEdited>(_nameEdited);
     on<DescriptionEdited>(_descriptionEdited);
@@ -63,6 +69,7 @@ class EditExpenditureBloc
   Future<void> _onSubmitted(
       OnSubmitted event, Emitter<EditExpenditureState> emit) async {
     final expenditure = Expenditure(
+      id: state.initialExpenditure?.id,
       name: state.name,
       description: state.description,
       value: state.value,

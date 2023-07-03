@@ -1,30 +1,30 @@
-part of 'trip_overview_bloc.dart';
+part of 'day_overview_bloc.dart';
 
-abstract class TripOverviewEvent extends Equatable {
-  const TripOverviewEvent();
+abstract class DayOverviewEvent extends Equatable {
+  const DayOverviewEvent();
 
 }
-class TripOverviewSubscriptionRequest extends TripOverviewEvent{
+class TripOverviewSubscriptionRequest extends DayOverviewEvent{
   const TripOverviewSubscriptionRequest();
   @override
   List<Object?> get props => [];
 
 }
-class InitTripOverview extends TripOverviewEvent{
+class InitTripOverview extends DayOverviewEvent{
   const InitTripOverview();
 
   @override
   List<Object?> get props => [];
 
 }
-class IncrementCurrentDay extends TripOverviewEvent{
+class IncrementCurrentDay extends DayOverviewEvent{
 
   const IncrementCurrentDay();
   @override
   List<Object?> get props => [];
 
 }
-class DecrementCurrentDay extends TripOverviewEvent{
+class DecrementCurrentDay extends DayOverviewEvent{
 
   const DecrementCurrentDay();
   @override
@@ -32,7 +32,7 @@ class DecrementCurrentDay extends TripOverviewEvent{
 
 }
 
-class SelectDayFinished extends TripOverviewEvent{
+class SelectDayFinished extends DayOverviewEvent{
 
   const SelectDayFinished({
     required this.day,

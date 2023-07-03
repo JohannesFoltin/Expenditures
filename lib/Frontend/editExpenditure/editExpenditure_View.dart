@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,15 +10,19 @@ import '../../Backend/repo/repo.dart';
 import 'bloc/edit_expenditure_bloc.dart';
 
 class EditExpenditureView extends StatelessWidget {
-  const EditExpenditureView({super.key, required this.day, required this.trip});
+  const EditExpenditureView(
+      {required this.day, required this.trip, super.key, this.expenditure});
+
   final Day day;
   final Trip trip;
+  final Expenditure? expenditure;
 
-  static Route<void> route(Trip strip, Day day) {
+  static Route<void> route(Trip strip, Day day,Expenditure? expenditure) {
     return MaterialPageRoute<void>(
         builder: (_) => EditExpenditureView(
               trip: strip,
               day: day,
+              expenditure: expenditure,
             ));
   }
 
@@ -26,7 +31,7 @@ class EditExpenditureView extends StatelessWidget {
     return BlocProvider(
       create: (context) => EditExpenditureBloc(
           repository: context.read<Repo>(),
-          expenditure: null,
+          expenditure: expenditure,
           day: day,
           trip: trip),
       child: BlocListener<EditExpenditureBloc, EditExpenditureState>(
@@ -79,10 +84,11 @@ class EditExpenditureView extends StatelessWidget {
                         .add(SwitchedPayedWithCard()),
                   ),
                   TextButton(
-                      onPressed: () {
-                        context.read<EditExpenditureBloc>().add(OnSubmitted());
-                      },
-                      child: const Text('Submit'),)
+                    onPressed: () {
+                      context.read<EditExpenditureBloc>().add(OnSubmitted());
+                    },
+                    child: const Text('Submit'),
+                  )
                 ],
               ),
             );
