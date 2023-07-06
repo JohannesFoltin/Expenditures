@@ -22,7 +22,8 @@ class EditExpenditureView extends StatelessWidget {
                   repository: context.read<Repo>(),
                   expenditure: expenditure,
                   day: day,
-                  trip: strip),
+                  trip: strip,
+              category: category),
               child: const EditExpenditureView(),
             ));
   }
@@ -49,6 +50,10 @@ class EditExpenditure extends StatelessWidget {
     return BlocBuilder<EditExpenditureBloc, EditExpenditureState>(
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text('Passe deine Ausgabe an'),
+          ),
           body: Column(
             children: [
               Text("Name: ${state.name}"),
@@ -92,7 +97,8 @@ class EditExpenditure extends StatelessWidget {
                   context.read<EditExpenditureBloc>().add(OnSubmitted());
                 },
                 child: const Text('Submit'),
-              )
+              ),
+              Text(state.category.toString()),
             ],
           ),
         );

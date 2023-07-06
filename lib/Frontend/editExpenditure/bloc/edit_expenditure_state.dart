@@ -4,6 +4,7 @@ enum EditExpenditureStateEnum { onProgress, done }
 class EditExpenditureState extends Equatable {
 
   const EditExpenditureState({
+    required this.category,
     this.initialExpenditure,
     this.status = EditExpenditureStateEnum.onProgress,
     this.name = '',
@@ -14,6 +15,7 @@ class EditExpenditureState extends Equatable {
   });
 
   final Expenditure? initialExpenditure;
+  final Categories category;
   final EditExpenditureStateEnum status;
   final String name;
   final String description;
@@ -29,11 +31,13 @@ class EditExpenditureState extends Equatable {
         description,
         value,
         directExpenditure,
-        paidWithCard
+        paidWithCard,
+        category,
       ];
 
   EditExpenditureState copyWith({
     Expenditure? initialExpenditure,
+    Categories? category,
     EditExpenditureStateEnum? status,
     String? name,
     String? description,
@@ -43,6 +47,7 @@ class EditExpenditureState extends Equatable {
   }) {
     return EditExpenditureState(
       initialExpenditure: initialExpenditure ?? this.initialExpenditure,
+      category: category ?? this.category,
       status: status ?? this.status,
       name: name ?? this.name,
       description: description ?? this.description,

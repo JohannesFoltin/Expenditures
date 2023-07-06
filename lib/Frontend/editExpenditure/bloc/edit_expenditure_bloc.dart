@@ -19,10 +19,12 @@ class EditExpenditureBloc
     required Repo repository,
     required Expenditure? expenditure,
     required Day day,
-    required Trip trip
+    required Trip trip,
+    required Categories? category,
   })  : _repository = repository, _day = day,_trip = trip,
         super(EditExpenditureState(
           initialExpenditure: expenditure,
+          category: expenditure?.category ?? category?? Categories.sonstige,
           name: expenditure?.name ?? '',
           description: expenditure?.description ?? '',
           value: expenditure?.value ?? 0,
@@ -70,6 +72,7 @@ class EditExpenditureBloc
       OnSubmitted event, Emitter<EditExpenditureState> emit) async {
     final expenditure = Expenditure(
       id: state.initialExpenditure?.id,
+      category: state.category,
       name: state.name,
       description: state.description,
       value: state.value,
