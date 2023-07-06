@@ -5,6 +5,8 @@ import 'package:expenditures/Frontend/editExpenditure/editExpenditure_View.dart'
 import 'package:expenditures/Frontend/tripOverview/bloc/trip_overview_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class DayOverviewPage extends StatelessWidget {
   const DayOverviewPage({super.key});
@@ -43,6 +45,7 @@ class DayOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('de');
     return BlocListener<DayOverviewBloc, DayOverviewState>(
       listenWhen: (previous, current) => current.selectCategory == true,
       listener: (context, state) {
@@ -67,6 +70,7 @@ class DayOverview extends StatelessWidget {
                           .add(SelectDayFinished(day: DateTime.now())),
                       icon: const Icon(Icons.today))
                 ],
+                centerTitle: true,
                 title: TextButton(
                     onPressed: () {
                       _dayPicker(
@@ -78,7 +82,9 @@ class DayOverview extends StatelessWidget {
                               .read<DayOverviewBloc>()
                               .add(SelectDayFinished(day: value)));
                     },
-                    child: Text(state.currentSelectedDay.day.toString()))),
+                    child: Text(
+                        style: const TextStyle(color: Colors.black, fontSize: 22),
+                        "${DateFormat.EEEE("de").format(state.currentSelectedDay.day)} ${DateFormat("dd.MM.yyyy").format(state.currentSelectedDay.day)}"))),
             body: Column(
               children: [
                 Expanded(
@@ -139,17 +145,17 @@ class DayOverview extends StatelessWidget {
               children: [
                 TextButton(
                     onPressed: () {
-                      _done(context, bloc, state,Categories.essen);
+                      _done(context, bloc, state, Categories.essen);
                     },
                     child: const Text('Essen')),
                 TextButton(
                     onPressed: () {
-                      _done(context, bloc, state,Categories.transport);
+                      _done(context, bloc, state, Categories.transport);
                     },
                     child: const Text('Transport')),
                 TextButton(
                     onPressed: () {
-                      _done(context, bloc, state,Categories.lebensmittel);
+                      _done(context, bloc, state, Categories.lebensmittel);
                     },
                     child: const Text('Lebensmittel')),
               ],
@@ -158,17 +164,17 @@ class DayOverview extends StatelessWidget {
               children: [
                 TextButton(
                     onPressed: () {
-                      _done(context, bloc, state,Categories.schlafen);
+                      _done(context, bloc, state, Categories.schlafen);
                     },
                     child: const Text('Schlafen')),
                 TextButton(
                     onPressed: () {
-                      _done(context, bloc, state,Categories.aktivitaeten);
+                      _done(context, bloc, state, Categories.aktivitaeten);
                     },
                     child: const Text('Aktivitäten')),
                 TextButton(
                     onPressed: () {
-                      _done(context, bloc, state,Categories.sonstige);
+                      _done(context, bloc, state, Categories.sonstige);
                     },
                     child: const Text('Sonstiges')),
               ],

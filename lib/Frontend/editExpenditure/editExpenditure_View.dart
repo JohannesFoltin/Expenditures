@@ -56,7 +56,7 @@ class EditExpenditure extends StatelessWidget {
           ),
           body: Column(
             children: [
-              Text("Name: ${state.name}"),
+              Text('Name: ${state.name}'),
               TextField(
                 onChanged: (value) => context
                     .read<EditExpenditureBloc>()
@@ -98,7 +98,6 @@ class EditExpenditure extends StatelessWidget {
                 },
                 child: const Text('Submit'),
               ),
-              Text(state.category.toString()),
             ],
           ),
         );

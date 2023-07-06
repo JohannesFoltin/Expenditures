@@ -1,5 +1,5 @@
 part of 'edit_expenditure_bloc.dart';
-enum EditExpenditureStateEnum { onProgress, done }
+enum EditExpenditureStateEnum { onProgress, done ,failure}
 
 class EditExpenditureState extends Equatable {
 

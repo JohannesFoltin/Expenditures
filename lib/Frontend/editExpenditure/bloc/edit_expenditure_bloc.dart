@@ -14,7 +14,6 @@ part 'edit_expenditure_state.dart';
 
 class EditExpenditureBloc
     extends Bloc<EditExpenditureEvent, EditExpenditureState> {
-  //TODO Add initExpenditure
   EditExpenditureBloc({
     required Repo repository,
     required Expenditure? expenditure,
@@ -84,7 +83,7 @@ class EditExpenditureBloc
        await _repository.saveExpenditure(_trip, _day, expenditure);
     }
     catch(e) {
-      print(e);
+      //TODO
     }
   }
 }
