@@ -28,7 +28,7 @@ class Trip extends Equatable {
   final int dailyLimit;
 
   @override
-  List<Object> get props => [id, days, dailyLimit];
+  List<Object> get props => [id, days, dailyLimit,name];
   Map<String, dynamic> toJson() => _$TripToJson(this);
 
   Trip copyWith({

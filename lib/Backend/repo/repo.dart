@@ -22,4 +22,5 @@ class Repo {
 
   Future<void> deleteExpenditure(Trip trip, Day day, Expenditure expenditure) =>
       _tripsApi.deleteExpenditure(trip, day, expenditure);
+  Trip getFirstTrip() => _tripsApi.getFirstTrip();
 }

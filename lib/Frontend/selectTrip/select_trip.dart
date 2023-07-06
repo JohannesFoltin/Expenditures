@@ -39,17 +39,17 @@ class SelectTripView extends StatelessWidget {
                 for (final trip in state.trips)
                   TextButton(
                       onPressed: () {
-                        Navigator.of(context)
-                            .push(TripOverviewView.route(trip: trip));
+
                       },
                       onLongPress: () => context
                           .read<SelectTripBloc>()
                           .add(DeleteTrip(toDeleteTrip: trip)),
                       child: Text(
-                          "Trip vom ${trip.days.first.day} bis zum ${trip.days.last.day}")),
+                          trip.name)),
                 TextButton(
                     onPressed: () {
                       context.read<SelectTripBloc>().add(AddTrip(
+                        name: "name",
                           dailyLimit: 75,
                           startDay: DateTime(2023, 06, 22),
                           endDay: DateTime(2023, 07, 20)));

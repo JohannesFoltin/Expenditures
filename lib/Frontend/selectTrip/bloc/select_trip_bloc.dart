@@ -41,14 +41,14 @@ class SelectTripBloc extends Bloc<SelectTripEvent, SelectTripState> {
   }
 
   Future<void> _addTrip(AddTrip event, Emitter<SelectTripState> emit) async {
-    List<Day> days = [];
+    final days = <Day>[];
     final difference = event.endDay.difference(event.startDay).inDays;
-    for (int i = 0; i <= difference; i++) {
+    for (var i = 0; i <= difference; i++) {
       final day = Day(day: event.startDay.add(Duration(days: i)));
       days.add(day);
     }
-    final newTrip = Trip(days: days, dailyLimit: event.dailyLimit);
-    _repository.saveTrip(newTrip);
+    final newTrip = Trip(name: event.name ,days: days, dailyLimit: event.dailyLimit);
+    await _repository.saveTrip(newTrip);
   }
 
   Future<void> _deleteTrip(

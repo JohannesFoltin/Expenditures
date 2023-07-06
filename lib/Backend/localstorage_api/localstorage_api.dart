@@ -48,7 +48,7 @@ class LocalStorageApi extends Api {
           .toList();
       _tripsStreamController.add(trips);
     } else {
-      _tripsStreamController.add([Trip(days: days)]);
+      _tripsStreamController.add([Trip(name:'Bitte erstelle einen neunen Trip',days: days)]);
     }
   }
 
@@ -141,5 +141,11 @@ class LocalStorageApi extends Api {
     } else {
       throw Exception('Index not Found for Trip');
     }
+  }
+
+  @override
+  Trip getFirstTrip() {
+     final trips = [..._tripsStreamController.value];
+    return trips.first;
   }
 }

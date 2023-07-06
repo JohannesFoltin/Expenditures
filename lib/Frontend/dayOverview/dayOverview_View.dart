@@ -1,3 +1,4 @@
+import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/dayOverview/bloc/day_overview_bloc.dart';
 import 'package:expenditures/Frontend/editExpenditure/editExpenditure_View.dart';
@@ -96,49 +97,11 @@ class DayOverview extends StatelessWidget {
                           child: Column(
                             children: [
                               if (state.currentSelectedDay.expenditures.isEmpty)
-                                Center(child: Text('keine Ausgaben :)'))
+                                const Center(child: Text('keine Ausgaben :)'))
                               else
                                 for (final expenditure
                                     in state.currentSelectedDay.expenditures)
-                                  GestureDetector(
-                                    onLongPress: () => context
-                                        .read<DayOverviewBloc>()
-                                        .add(DeleteExpenditure(
-                                            expenditure: expenditure)),
-                                    onTap: () => Navigator.of(context).push(
-                                      EditExpenditureView.route(
-                                        strip: state.trip,
-                                        day: state.currentSelectedDay,
-                                        expenditure: expenditure,
-                                      ),
-                                    ),
-                                    child: Card(
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        height: 52,
-                                        child: Center(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 15),
-                                                  child:
-                                                      Text(expenditure.name)),
-                                              Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 15),
-                                                  child: Text(
-                                                      "${expenditure.value}€")),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
+                                  ExpenditureView(expenditure: expenditure)
                             ],
                           ),
                         ),
@@ -151,6 +114,58 @@ class DayOverview extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class ExpenditureView extends StatelessWidget {
+  const ExpenditureView({
+    required this.expenditure, super.key,
+  });
+
+  final Expenditure expenditure;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<DayOverviewBloc>().state;
+    return GestureDetector(
+      onLongPress: () => context
+          .read<DayOverviewBloc>()
+          .add(DeleteExpenditure(
+              expenditure: expenditure)),
+      onTap: () => Navigator.of(context).push(
+        EditExpenditureView.route(
+          strip: state.trip,
+          day: state.currentSelectedDay,
+          expenditure: expenditure,
+        ),
+      ),
+      child: Card(
+        child: SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: Center(
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    padding:
+                        const EdgeInsets.only(
+                            left: 15),
+                    child:
+                        Text(expenditure.name)),
+                Container(
+                    padding:
+                        const EdgeInsets.only(
+                            right: 15),
+                    child: Text(
+                        "${expenditure.value}€")),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

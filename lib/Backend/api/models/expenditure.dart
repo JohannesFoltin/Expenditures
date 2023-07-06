@@ -5,18 +5,21 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'expenditure.g.dart';
 
+enum Categories {
+  transport,
+  schlafen,
+  essen,
+  aktivitaeten,
+  lebensmittel,
+  sonstige
+}
+
 @immutable
 @JsonSerializable()
 class Expenditure extends Equatable {
-  final String id;
-  final String name;
-  final String description;
-  final int value;
-  final bool directExpenditure;
-  final bool paidWithCard;
-
   Expenditure({
     String? id,
+    this.category = Categories.sonstige,
     this.name = "",
     this.description = "",
     this.value = 0,
@@ -31,8 +34,23 @@ class Expenditure extends Equatable {
   factory Expenditure.fromJson(Map<String, dynamic> json) =>
       _$ExpenditureFromJson(json);
 
+  final Categories category;
+  final String id;
+  final String name;
+  final String description;
+  final int value;
+  final bool directExpenditure;
+  final bool paidWithCard;
+
   Map<String, dynamic> toJson() => _$ExpenditureToJson(this);
+
+
+  @override
+  List<Object> get props =>
+      [id, name, description, value, directExpenditure, paidWithCard];
+
   Expenditure copyWith({
+    Categories? category,
     String? id,
     String? name,
     String? description,
@@ -41,6 +59,7 @@ class Expenditure extends Equatable {
     bool? paidWithCard,
   }) {
     return Expenditure(
+      category: category ?? this.category,
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
@@ -49,8 +68,4 @@ class Expenditure extends Equatable {
       paidWithCard: paidWithCard ?? this.paidWithCard,
     );
   }
-
-  @override
-  List<Object> get props =>
-      [id, name, description, value, directExpenditure, paidWithCard];
 }
