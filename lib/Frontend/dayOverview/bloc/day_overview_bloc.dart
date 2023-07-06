@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -26,6 +27,7 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
     on<SelectDayFinished>(_selectDayFinished);
     on<DayOverviewSubscriptionRequest>(_onSubsciptionRequest);
     on<DeleteExpenditure>(_onDeleteExpenditure);
+    on<SelectCategory>(_onSelectCategory);
     on<InitTripOverview>(
       (event, emit) {
         final dayIndex = state.trip.days.indexWhere(
@@ -40,6 +42,7 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
   }
 
   final Repo _repo;
+
   Future<void> _onSubsciptionRequest(DayOverviewSubscriptionRequest event,
       Emitter<DayOverviewState> emit) async {
     await emit.forEach<List<Trip>>(
@@ -96,5 +99,10 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
       DeleteExpenditure event, Emitter<DayOverviewState> emit) async {
     await _repo.deleteExpenditure(
         state.trip, state.currentSelectedDay, event.expenditure);
+  }
+
+  Future<void> _onSelectCategory(
+      SelectCategory event, Emitter<DayOverviewState> emit) async {
+    emit(state.copyWith(selectCategory: !state.selectCategory));
   }
 }

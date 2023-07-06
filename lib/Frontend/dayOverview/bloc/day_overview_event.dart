@@ -9,6 +9,7 @@ class DayOverviewSubscriptionRequest extends DayOverviewEvent{
   @override
   List<Object?> get props => [];
 }
+
 class InitTripOverview extends DayOverviewEvent{
   const InitTripOverview();
 
@@ -49,5 +50,11 @@ class DeleteExpenditure extends DayOverviewEvent{
 
   @override
   List<Object?> get props => [expenditure];
+
+}
+class SelectCategory extends DayOverviewEvent{
+  const SelectCategory();
+  @override
+  List<Object?> get props => [];
 
 }

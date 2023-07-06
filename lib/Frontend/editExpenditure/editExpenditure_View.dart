@@ -1,21 +1,22 @@
-import 'dart:ffi';
-
+import 'package:expenditures/Backend/api/models/day.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
+import 'package:expenditures/Backend/api/models/trip.dart';
+import 'package:expenditures/Backend/repo/repo.dart';
+import 'package:expenditures/Frontend/editExpenditure/bloc/edit_expenditure_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../Backend/api/models/day.dart';
-import '../../Backend/api/models/trip.dart';
-import '../../Backend/repo/repo.dart';
-import 'bloc/edit_expenditure_bloc.dart';
 
 class EditExpenditureView extends StatelessWidget {
   const EditExpenditureView({super.key});
 
-  static Route<void> route(
-      {required Trip strip, required Day day, Expenditure? expenditure}) {
+  static Route<void> route({
+    required Trip strip,
+    required Day day,
+    Categories? category,
+    Expenditure? expenditure,
+  }) {
     return MaterialPageRoute<void>(
-      fullscreenDialog: true,
+        fullscreenDialog: true,
         builder: (_) => BlocProvider(
               create: (context) => EditExpenditureBloc(
                   repository: context.read<Repo>(),
@@ -55,21 +56,18 @@ class EditExpenditure extends StatelessWidget {
                 onChanged: (value) => context
                     .read<EditExpenditureBloc>()
                     .add(NameEdited(newName: value)),
-                decoration:
-                    const InputDecoration(border: OutlineInputBorder()),
+                decoration: const InputDecoration(border: OutlineInputBorder()),
               ),
               Text("Beschreibung: ${state.description}"),
               TextField(
-                decoration:
-                    const InputDecoration(border: OutlineInputBorder()),
+                decoration: const InputDecoration(border: OutlineInputBorder()),
                 onChanged: (value) => context
                     .read<EditExpenditureBloc>()
                     .add(DescriptionEdited(newDescription: value)),
               ),
               Text("Value: ${state.value}"),
               TextField(
-                decoration:
-                    const InputDecoration(border: OutlineInputBorder()),
+                decoration: const InputDecoration(border: OutlineInputBorder()),
                 keyboardType: TextInputType.number,
                 onChanged: (value) => context
                     .read<EditExpenditureBloc>()
