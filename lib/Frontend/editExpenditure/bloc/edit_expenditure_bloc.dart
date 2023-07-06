@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:expenditures/Backend/api/models/expenditure.dart';
-
 import 'package:expenditures/Backend/api/models/day.dart';
+import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:uuid/uuid.dart';
@@ -29,6 +28,7 @@ class EditExpenditureBloc
           value: expenditure?.value ?? 0,
           paidWithCard: expenditure?.paidWithCard ?? true,
           directExpenditure: expenditure?.directExpenditure ?? true,
+          days: expenditure?.days ?? 1
         )) {
     on<NameEdited>(_nameEdited);
     on<DescriptionEdited>(_descriptionEdited);
@@ -45,6 +45,7 @@ class EditExpenditureBloc
   Future<void> _nameEdited(
       NameEdited event, Emitter<EditExpenditureState> emit) async {
     emit(state.copyWith(name: event.newName));
+
   }
 
   Future<void> _descriptionEdited(
@@ -69,21 +70,44 @@ class EditExpenditureBloc
 
   Future<void> _onSubmitted(
       OnSubmitted event, Emitter<EditExpenditureState> emit) async {
-    final expenditure = Expenditure(
-      id: state.initialExpenditure?.id,
-      category: state.category,
-      name: state.name,
-      description: state.description,
-      value: state.value,
-      directExpenditure: state.directExpenditure,
-      paidWithCard: state.paidWithCard,
-    );
-    try {
-      emit(state.copyWith(status: EditExpenditureStateEnum.done));
-       await _repository.saveExpenditure(_trip, _day, expenditure);
-    }
-    catch(e) {
-      //TODO
+    if(state.days == 1) {
+      final expenditure = Expenditure(
+        id: state.initialExpenditure?.id,
+        category: state.category,
+        name: state.name,
+        description: state.description,
+        value: state.value,
+        directExpenditure: state.directExpenditure,
+        paidWithCard: state.paidWithCard,
+      );
+      try {
+        emit(state.copyWith(status: EditExpenditureStateEnum.done));
+        await _repository.saveExpenditure(_trip, _day, expenditure);
+      }
+      catch (e) {
+        //TODO
+      }
+    }else{
+      final id = const Uuid().v4();
+      for (int i = 0; i < state.days; i++) {
+        final value = state.value / state.days;
+        final expenditure = Expenditure(
+          id: state.initialExpenditure?.id ?? id,
+          category: state.category,
+          name: state.name,
+          description: state.description,
+          value: value,
+          directExpenditure: state.directExpenditure,
+          paidWithCard: state.paidWithCard,
+        );
+        try {
+          emit(state.copyWith(status: EditExpenditureStateEnum.done));
+          await _repository.saveExpenditure(_trip, _day, expenditure);
+        }
+        catch (e) {
+          //TODO
+        }
+      }
     }
   }
 }

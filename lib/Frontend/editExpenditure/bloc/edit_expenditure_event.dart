@@ -26,7 +26,7 @@ class DescriptionEdited extends EditExpenditureEvent{
 }
 
 class ValueEdited extends EditExpenditureEvent{
-  final int newValue;
+  final double newValue;
 
   @override
   List<Object?> get props => [newValue];

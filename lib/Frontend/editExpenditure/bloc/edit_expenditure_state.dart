@@ -12,6 +12,7 @@ class EditExpenditureState extends Equatable {
     this.value = 0,
     this.directExpenditure = true,
     this.paidWithCard = true,
+    this.days = 1
   });
 
   final Expenditure? initialExpenditure;
@@ -19,9 +20,10 @@ class EditExpenditureState extends Equatable {
   final EditExpenditureStateEnum status;
   final String name;
   final String description;
-  final int value;
+  final double value;
   final bool directExpenditure;
   final bool paidWithCard;
+  final int days;
 
   @override
   List<Object?> get props => [
@@ -33,6 +35,7 @@ class EditExpenditureState extends Equatable {
         directExpenditure,
         paidWithCard,
         category,
+        days
       ];
 
   EditExpenditureState copyWith({
@@ -41,9 +44,10 @@ class EditExpenditureState extends Equatable {
     EditExpenditureStateEnum? status,
     String? name,
     String? description,
-    int? value,
+    double? value,
     bool? directExpenditure,
     bool? paidWithCard,
+    int? days,
   }) {
     return EditExpenditureState(
       initialExpenditure: initialExpenditure ?? this.initialExpenditure,
@@ -54,6 +58,7 @@ class EditExpenditureState extends Equatable {
       value: value ?? this.value,
       directExpenditure: directExpenditure ?? this.directExpenditure,
       paidWithCard: paidWithCard ?? this.paidWithCard,
+      days: days ?? this.days,
     );
   }
 }

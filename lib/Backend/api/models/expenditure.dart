@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
@@ -19,10 +21,11 @@ enum Categories {
 class Expenditure extends Equatable {
   Expenditure({
     String? id,
+    this.days = 1,
     this.category = Categories.sonstige,
     this.name = "",
     this.description = "",
-    this.value = 0,
+    this.value = 0.0,
     this.directExpenditure = true,
     this.paidWithCard = true,
   })  : assert(
@@ -38,25 +41,27 @@ class Expenditure extends Equatable {
   final String id;
   final String name;
   final String description;
-  final int value;
+  final double value;
   final bool directExpenditure;
   final bool paidWithCard;
+  final int days;
 
   Map<String, dynamic> toJson() => _$ExpenditureToJson(this);
 
 
   @override
   List<Object> get props =>
-      [id, name, description, value, directExpenditure, paidWithCard];
+      [id, name, description, value, directExpenditure, paidWithCard,days];
 
   Expenditure copyWith({
     Categories? category,
     String? id,
     String? name,
     String? description,
-    int? value,
+    double? value,
     bool? directExpenditure,
     bool? paidWithCard,
+    int? days,
   }) {
     return Expenditure(
       category: category ?? this.category,
@@ -66,6 +71,7 @@ class Expenditure extends Equatable {
       value: value ?? this.value,
       directExpenditure: directExpenditure ?? this.directExpenditure,
       paidWithCard: paidWithCard ?? this.paidWithCard,
+      days: days ?? this.days,
     );
   }
 }

@@ -76,7 +76,7 @@ class EditExpenditure extends StatelessWidget {
                 keyboardType: TextInputType.number,
                 onChanged: (value) => context
                     .read<EditExpenditureBloc>()
-                    .add(ValueEdited(newValue: int.parse(value))),
+                    .add(ValueEdited(newValue: double.parse(value))),
               ),
               const Text("Direct bezahlt?"),
               Switch(
