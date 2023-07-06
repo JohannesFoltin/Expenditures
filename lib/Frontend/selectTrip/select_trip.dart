@@ -3,7 +3,6 @@ import 'package:expenditures/Frontend/tripOverview/tripOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../dayOverview/dayOverview_View.dart';
 import 'bloc/select_trip_bloc.dart';
 
 class SelectTrip extends StatelessWidget {
@@ -11,16 +10,29 @@ class SelectTrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocProvider(
+    return BlocProvider(
         create: (context) => SelectTripBloc(context.read<Repo>())
-          ..add(const SelectTripSubscribtionRequest()),
-        child: BlocBuilder<SelectTripBloc, SelectTripState>(
-          //TODO Maybe more precise
-          buildWhen: (previous, current) =>
-              previous.trips.length != current.trips.length,
-          builder: (context, state) {
-            return Column(
+          ..add(SelectTripSubscribtionRequest()),
+        child: const SelectTripView(),
+    );
+  }
+}
+
+class SelectTripView extends StatelessWidget {
+  const SelectTripView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("ell"),),
+      body: BlocBuilder<SelectTripBloc, SelectTripState>(
+        //TODO Maybe more precise
+/*          buildWhen: (previous, current) =>
+            previous.trips.length != current.trips.length,*/
+        builder: (context, state) {
+          return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -44,9 +56,8 @@ class SelectTrip extends StatelessWidget {
                     },
                     child: const Text("Add Trip")),
               ],
-            );
-          },
-        ),
+          );
+        },
       ),
     );
   }

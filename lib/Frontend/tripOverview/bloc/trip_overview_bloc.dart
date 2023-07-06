@@ -14,20 +14,21 @@ class TripOverviewBloc extends Bloc<TripOverviewEvent, TripOverviewState> {
       : _repository = repo, super(TripOverviewState(trip: trip)) {
     on<Subscription>(_onSubscription);
   }
+
   final Repo _repository;
+
   Future<void> _onSubscription(
       Subscription event, Emitter<TripOverviewState> emit) async {
-
     await emit.forEach<List<Trip>>(
       _repository.getTrips(),
-      onData: (trips) {
-        final indexTrip =  trips.indexWhere((element) => element.id == state.trip.id);
-        if (indexTrip >= 0) {
-          emit(state.copyWith(trip: () => trips[indexTrip]));
-          return state;
-        }else {
-          return state;
+      onData: (data) {
+        print("jep");
+        emit(state.copyWith(tripState: TripState.loading));
+        final indTrip = data.indexWhere((element) => element.id == state.trip.id);
+        if(indTrip >= 0){
+          return state.copyWith(trip: data[indTrip],tripState: TripState.done);
         }
+        return state.copyWith(tripState: TripState.failure);
       },
       // onError: (_, __) => state.copyWith(
       //   trainingEditorStatus: TrainingOverviewStatus.failure,

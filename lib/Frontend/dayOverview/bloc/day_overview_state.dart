@@ -1,27 +1,29 @@
 part of 'day_overview_bloc.dart';
 
-class DayOverviewState extends Equatable {
+enum DayState {loading, done, failure}
+
+final class DayOverviewState extends Equatable {
   const DayOverviewState(
       {required this.currentSelectedDay,
-      required this.days,
       required this.trip,
+        this.dayState = DayState.loading,
        });
 
+  final DayState dayState;
   final Day currentSelectedDay;
-  final List<Day> days;
   final Trip trip;
 
   @override
-  List<Object?> get props => [trip,currentSelectedDay, days];
+  List<Object?> get props => [trip,currentSelectedDay,dayState];
 
   DayOverviewState copyWith({
+    DayState? dayState,
     Day? currentSelectedDay,
-    List<Day> Function()? days,
     Trip? trip,
   }) {
     return DayOverviewState(
+      dayState: dayState ?? this.dayState,
       currentSelectedDay: currentSelectedDay ?? this.currentSelectedDay,
-      days: days != null ? days() : this.days,
       trip: trip ?? this.trip,
     );
   }

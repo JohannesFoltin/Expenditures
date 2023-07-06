@@ -7,7 +7,7 @@ part 'expenditure.g.dart';
 
 @immutable
 @JsonSerializable()
-class Expenditure extends Equatable{
+class Expenditure extends Equatable {
   final String id;
   final String name;
   final String description;
@@ -20,11 +20,13 @@ class Expenditure extends Equatable{
     this.name = "",
     this.description = "",
     this.value = 0,
-    this.directExpenditure= true,
+    this.directExpenditure = true,
     this.paidWithCard = true,
-    }) : assert( id == null || id.isNotEmpty,
-  'id can not be null and should be empty',
-  ),id = id ?? const Uuid().v4();
+  })  : assert(
+          id == null || id.isNotEmpty,
+          'id can not be null and should be empty',
+        ),
+        id = id ?? const Uuid().v4();
 
   factory Expenditure.fromJson(Map<String, dynamic> json) =>
       _$ExpenditureFromJson(json);
@@ -49,5 +51,6 @@ class Expenditure extends Equatable{
   }
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props =>
+      [id, name, description, value, directExpenditure, paidWithCard];
 }

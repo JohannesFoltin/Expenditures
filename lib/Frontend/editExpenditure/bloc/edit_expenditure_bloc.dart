@@ -76,7 +76,12 @@ class EditExpenditureBloc
       directExpenditure: state.directExpenditure,
       paidWithCard: state.paidWithCard,
     );
-      await _repository.saveExpenditure(_trip, _day,expenditure);
+    try {
       emit(state.copyWith(status: EditExpenditureStateEnum.done));
+       await _repository.saveExpenditure(_trip, _day, expenditure);
+    }
+    catch(e) {
+      print(e);
+    }
   }
 }

@@ -23,7 +23,7 @@ class Day extends Equatable{
   Map<String, dynamic> toJson() => _$DayToJson(this);
 
   @override
-  List<Object> get props => [day];
+  List<Object> get props => [day,expenditures];
 
   Day copyWith({
     DateTime? day,

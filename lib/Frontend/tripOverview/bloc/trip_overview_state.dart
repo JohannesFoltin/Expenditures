@@ -1,19 +1,24 @@
 part of 'trip_overview_bloc.dart';
 
-class TripOverviewState extends Equatable {
-  const TripOverviewState({required this.trip});
+enum TripState { loading, done , failure}
+
+final class TripOverviewState extends Equatable {
+  const TripOverviewState(
+      {required this.trip, this.tripState = TripState.loading,});
+
+  final TripState tripState;
   final Trip trip;
 
-
   @override
-  List<Object?> get props => [trip];
+  List<Object?> get props => [trip,tripState];
 
   TripOverviewState copyWith({
-    Trip Function()? trip,
+    TripState? tripState,
+    Trip? trip,
   }) {
     return TripOverviewState(
-      trip: trip != null ? trip() : this.trip,
+      tripState: tripState ?? this.tripState,
+      trip: trip ?? this.trip,
     );
   }
 }
-

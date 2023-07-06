@@ -4,6 +4,11 @@ abstract class DayOverviewEvent extends Equatable {
   const DayOverviewEvent();
 
 }
+class DayOverviewSubscriptionRequest extends DayOverviewEvent{
+  const DayOverviewSubscriptionRequest();
+  @override
+  List<Object?> get props => [];
+}
 class InitTripOverview extends DayOverviewEvent{
   const InitTripOverview();
 
@@ -35,4 +40,14 @@ class SelectDayFinished extends DayOverviewEvent{
 
   @override
   List<Object?> get props => [day];
+}
+class DeleteExpenditure extends DayOverviewEvent{
+
+  const DeleteExpenditure({required this.expenditure});
+
+  final Expenditure expenditure;
+
+  @override
+  List<Object?> get props => [expenditure];
+
 }

@@ -1,11 +1,9 @@
-
+import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/dayOverview/bloc/day_overview_bloc.dart';
 import 'package:expenditures/Frontend/editExpenditure/editExpenditure_View.dart';
 import 'package:expenditures/Frontend/tripOverview/bloc/trip_overview_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../Backend/repo/repo.dart';
 
 class DayOverviewPage extends StatelessWidget {
   const DayOverviewPage({super.key});
@@ -13,9 +11,12 @@ class DayOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DayOverviewBloc(context.read<Repo>(),
-          BlocProvider.of<TripOverviewBloc>(context).state.trip,)
-        ..add(const InitTripOverview()),
+      create: (context) => DayOverviewBloc(
+        context.read<Repo>(),
+        BlocProvider.of<TripOverviewBloc>(context).state.trip,
+      )
+        ..add(const InitTripOverview())
+        ..add(const DayOverviewSubscriptionRequest()),
       child: const DayOverview(),
     );
   }
@@ -48,9 +49,7 @@ class DayOverview extends StatelessWidget {
               child: const Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context).push(EditExpenditureView.route(
-                   day: state.currentSelectedDay,
-                  strip: state.trip
-                    ));
+                    day: state.currentSelectedDay, strip: state.trip));
               }),
           appBar: AppBar(
               leading: const SizedBox.shrink(),
@@ -64,7 +63,7 @@ class DayOverview extends StatelessWidget {
               title: TextButton(
                   onPressed: () {
                     _dayPicker(context, state.currentSelectedDay.day,
-                            state.days.first.day, state.days.last.day)
+                            state.trip.days.first.day, state.trip.days.last.day)
                         .then((value) => context
                             .read<DayOverviewBloc>()
                             .add(SelectDayFinished(day: value)));
@@ -80,13 +79,13 @@ class DayOverview extends StatelessWidget {
                     if (details.primaryVelocity! > sensitivity) {
                       context
                           .read<DayOverviewBloc>()
-                          .add(const IncrementCurrentDay());
+                          .add(const DecrementCurrentDay());
                     }
                     // Swiping in left direction.
                     if (details.primaryVelocity! < sensitivity) {
                       context
                           .read<DayOverviewBloc>()
-                          .add(const DecrementCurrentDay());
+                          .add(const IncrementCurrentDay());
                     }
                   },
                   child: Column(
@@ -96,40 +95,50 @@ class DayOverview extends StatelessWidget {
                           physics: const AlwaysScrollableScrollPhysics(),
                           child: Column(
                             children: [
-                              for (final expenditure
-                                  in state.currentSelectedDay.expenditures)
-                                GestureDetector(
-                                  onTap: () => Navigator.of(context).push(
-                                    EditExpenditureView.route(
-                                      strip: state.trip,
-                                      day: state.currentSelectedDay,
-                                      expenditure: expenditure,
+                              if (state.currentSelectedDay.expenditures.isEmpty)
+                                Center(child: Text('keine Ausgaben :)'))
+                              else
+                                for (final expenditure
+                                    in state.currentSelectedDay.expenditures)
+                                  GestureDetector(
+                                    onLongPress: () => context
+                                        .read<DayOverviewBloc>()
+                                        .add(DeleteExpenditure(
+                                            expenditure: expenditure)),
+                                    onTap: () => Navigator.of(context).push(
+                                      EditExpenditureView.route(
+                                        strip: state.trip,
+                                        day: state.currentSelectedDay,
+                                        expenditure: expenditure,
+                                      ),
                                     ),
-                                  ),
-                                  child: Card(
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      height: 52,
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                                padding: const EdgeInsets.only(
-                                                    left: 15),
-                                                child: Text(expenditure.name)),
-                                            Container(
-                                                padding: const EdgeInsets.only(
-                                                    right: 15),
-                                                child: Text(
-                                                    "${expenditure.value}€")),
-                                          ],
+                                    child: Card(
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 52,
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 15),
+                                                  child:
+                                                      Text(expenditure.name)),
+                                              Container(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 15),
+                                                  child: Text(
+                                                      "${expenditure.value}€")),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
+                                  )
                             ],
                           ),
                         ),

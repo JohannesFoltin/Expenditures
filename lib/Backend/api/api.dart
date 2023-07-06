@@ -13,4 +13,6 @@ abstract class Api{
   Future<void> deleteTrip(Trip trip);
 
   Future<void> saveExpenditure(Trip trip,Day day,Expenditure expenditure);
+
+  Future<void> deleteExpenditure(Trip trip,Day day,Expenditure expenditure);
 }

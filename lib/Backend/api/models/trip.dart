@@ -9,29 +9,37 @@ part 'trip.g.dart';
 
 @immutable
 @JsonSerializable()
-class Trip extends Equatable{
+class Trip extends Equatable {
+  Trip({
+    String? id,
+    this.name = '',
+    this.days = const [],
+    this.dailyLimit = 0,
+  })  : assert(
+          id == null || id.isNotEmpty,
+          'id can not be null and should be empty',
+        ),
+        id = id ?? const Uuid().v4();
+
+  factory Trip.fromJson(Map<String, dynamic> json) => _$TripFromJson(json);
   final String id;
+  final String name;
   final List<Day> days;
   final int dailyLimit;
 
-  Trip({
-    String? id,
-    this.days = const [],
-    this.dailyLimit = 0,
-    }): assert( id == null || id.isNotEmpty,
-  'id can not be null and should be empty',
-  ),id = id ?? const Uuid().v4();
-
   @override
-  List<Object> get props => [days,dailyLimit];
-  factory Trip.fromJson(Map<String, dynamic> json) =>
-      _$TripFromJson(json);
+  List<Object> get props => [id, days, dailyLimit];
   Map<String, dynamic> toJson() => _$TripToJson(this);
+
   Trip copyWith({
+    String? id,
+    String? name,
     List<Day>? days,
     int? dailyLimit,
   }) {
     return Trip(
+      id: id ?? this.id,
+      name: name ?? this.name,
       days: days ?? this.days,
       dailyLimit: dailyLimit ?? this.dailyLimit,
     );

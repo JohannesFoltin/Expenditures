@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// A Flutter implementation of the TrainingApi that uses local storage.
 /// {@endtemplate}
 ///
+///
 class LocalStorageApi extends Api {
   /// {@macro local_storage_fitnessfourthausend_api}
 
@@ -21,6 +22,7 @@ class LocalStorageApi extends Api {
   }) : _plugin = plugin {
     _init();
   }
+
 
   final SharedPreferences _plugin;
 
@@ -34,6 +36,7 @@ class LocalStorageApi extends Api {
       _plugin.setString(key, value);
 
   void _init() {
+    final days = <Day>[Day(day: DateTime.utc(2004,10,09))];
     final tripsJson = _getValue(_kTripCollectionKey);
     if (tripsJson != null) {
       final trips = List<Map<dynamic, dynamic>>.from(
@@ -45,7 +48,7 @@ class LocalStorageApi extends Api {
           .toList();
       _tripsStreamController.add(trips);
     } else {
-      _tripsStreamController.add(const []);
+      _tripsStreamController.add([Trip(days: days)]);
     }
   }
 
@@ -79,26 +82,64 @@ class LocalStorageApi extends Api {
   @override
   Future<void> saveExpenditure(Trip trip, Day day, Expenditure expenditure) {
     final trips = [..._tripsStreamController.value];
-    final tripsIndex = trips.indexWhere((t) => t.id == trip.id);
-    if (tripsIndex >= 0) {
-      final dayIndex = trips[tripsIndex]
-          .days
-          .indexWhere((element) => element.day == day.day);
-      if (dayIndex >= 0) {
-        final expendIndex = day.expenditures
-            .indexWhere((element) => element.id == expenditure.id);
-        if (expendIndex >= 0) {
-          trips[tripsIndex].days[dayIndex].expenditures[expendIndex] =
-              expenditure;
-        } else {
-          final expenditures = trips[tripsIndex].days[dayIndex].expenditures.toList()..add(expenditure);
-          trips[tripsIndex].days[dayIndex] = trips[tripsIndex].days[dayIndex].copyWith(expenditures: expenditures,);
-        }
-      }
+    final tripsIndex = _getTripIndexWithException(trips, trip);
+    final dayIndex = _getDayIndexWithException(trips[tripsIndex].days, day);
+    final expendIndex =
+        day.expenditures.indexWhere((element) => element.id == expenditure.id);
+    if (expendIndex >= 0) {
+      trips[tripsIndex].days[dayIndex].expenditures[expendIndex] = expenditure;
     } else {
-      // Exception??
+      final expenditures = trips[tripsIndex]
+          .days[dayIndex]
+          .expenditures
+          .toList()
+        ..add(expenditure);
+      trips[tripsIndex].days[dayIndex] =
+          trips[tripsIndex].days[dayIndex].copyWith(
+                expenditures: expenditures,
+              );
     }
     _tripsStreamController.add(trips);
     return _setValue(_kTripCollectionKey, json.encode(trips));
+  }
+
+  @override
+  Future<void> deleteExpenditure(Trip trip,Day day, Expenditure expenditure){
+    final trips = [..._tripsStreamController.value];
+    final tripsIndex = _getTripIndexWithException(trips, trip);
+    final dayIndex = _getDayIndexWithException(trips[tripsIndex].days, day);
+    final expenditureIndex = _getExpenditureIndexWithException(trips[tripsIndex].days[dayIndex].expenditures, expenditure);
+    trips[tripsIndex].days[dayIndex].expenditures.removeAt(expenditureIndex);
+
+    _tripsStreamController.add(trips);
+    return _setValue(_kTripCollectionKey, json.encode(trips));
+  }
+  int _getTripIndexWithException(List<Trip> trips, Trip trip) {
+    final tripIndex = trips.indexWhere((element) => element.id == trip.id);
+    if (tripIndex >= 0) {
+      return tripIndex;
+    } else {
+      throw Exception('Index not Found for Trip');
+    }
+  }
+
+  int _getDayIndexWithException(List<Day> days, Day day) {
+    final dayIndex = days.indexWhere((element) => element.day == day.day);
+    if (dayIndex >= 0) {
+      return dayIndex;
+    } else {
+      throw Exception('Index not Found for Trip');
+    }
+  }
+
+  int _getExpenditureIndexWithException(
+      List<Expenditure> expenditures, Expenditure expenditure) {
+    final expenditureIndex =
+        expenditures.indexWhere((element) => element.id == expenditure.id);
+    if (expenditureIndex >= 0) {
+      return expenditureIndex;
+    } else {
+      throw Exception('Index not Found for Trip');
+    }
   }
 }

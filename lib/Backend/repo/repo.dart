@@ -1,5 +1,3 @@
-
-
 import 'package:expenditures/Backend/api/api.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
@@ -21,4 +19,7 @@ class Repo {
 
   Future<void> saveExpenditure(Trip trip, Day day, Expenditure expenditure) =>
       _tripsApi.saveExpenditure(trip, day, expenditure);
+
+  Future<void> deleteExpenditure(Trip trip, Day day, Expenditure expenditure) =>
+      _tripsApi.deleteExpenditure(trip, day, expenditure);
 }
