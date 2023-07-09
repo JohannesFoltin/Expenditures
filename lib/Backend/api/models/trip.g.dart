@@ -7,10 +7,12 @@ part of 'trip.dart';
 // **************************************************************************
 
 Trip _$TripFromJson(Map<String, dynamic> json) => Trip(
+      startDay: DateTime.parse(json['startDay'] as String),
+      endDay: DateTime.parse(json['endDay'] as String),
       id: json['id'] as String?,
       name: json['name'] as String? ?? '',
-      days: (json['days'] as List<dynamic>?)
-              ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
+      expenditures: (json['expenditures'] as List<dynamic>?)
+              ?.map((e) => Expenditure.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
       dailyLimit: json['dailyLimit'] as int? ?? 0,
@@ -19,6 +21,8 @@ Trip _$TripFromJson(Map<String, dynamic> json) => Trip(
 Map<String, dynamic> _$TripToJson(Trip instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'days': instance.days,
+      'expenditures': instance.expenditures,
       'dailyLimit': instance.dailyLimit,
+      'startDay': instance.startDay.toIso8601String(),
+      'endDay': instance.endDay.toIso8601String(),
     };

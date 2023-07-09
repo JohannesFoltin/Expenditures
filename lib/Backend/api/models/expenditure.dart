@@ -21,10 +21,10 @@ enum Categories {
 class Expenditure extends Equatable {
   Expenditure({
     String? id,
-    this.days = 1,
+    this.days = const [],
     this.category = Categories.sonstige,
-    this.name = "",
-    this.description = "",
+    this.name = '',
+    this.description = '',
     this.value = 0.0,
     this.directExpenditure = true,
     this.paidWithCard = true,
@@ -44,7 +44,7 @@ class Expenditure extends Equatable {
   final double value;
   final bool directExpenditure;
   final bool paidWithCard;
-  final int days;
+  final List<DateTime> days;
 
   Map<String, dynamic> toJson() => _$ExpenditureToJson(this);
 
@@ -61,7 +61,7 @@ class Expenditure extends Equatable {
     double? value,
     bool? directExpenditure,
     bool? paidWithCard,
-    int? days,
+    List<DateTime>? days,
   }) {
     return Expenditure(
       category: category ?? this.category,

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../../Backend/api/models/day.dart';
 import '../../../Backend/api/models/trip.dart';
 import '../../../Backend/repo/repo.dart';
 
@@ -27,27 +26,21 @@ class SelectTripBloc extends Bloc<SelectTripEvent, SelectTripState> {
   ) async {
     emit(state.copyWith(state: State.loading));
 
-    await emit.forEach<List<Trip>>(
-      _repository.getTrips(),
-      onData: (trips)  {
-        return state.copyWith(
-        trips: trips,
-        state: State.done
-      );}
-      // onError: (_, __) => state.copyWith(
-      //   trainingEditorStatus: TrainingOverviewStatus.failure,
-      // ),
-    );
+    await emit.forEach<List<Trip>>(_repository.getTrips(), onData: (trips) {
+      return state.copyWith(trips: trips, state: State.done);
+    }
+        // onError: (_, __) => state.copyWith(
+        //   trainingEditorStatus: TrainingOverviewStatus.failure,
+        // ),
+        );
   }
 
   Future<void> _addTrip(AddTrip event, Emitter<SelectTripState> emit) async {
-    final days = <Day>[];
-    final difference = event.endDay.difference(event.startDay).inDays;
-    for (var i = 0; i <= difference; i++) {
-      final day = Day(day: event.startDay.add(Duration(days: i)));
-      days.add(day);
-    }
-    final newTrip = Trip(name: event.name ,days: days, dailyLimit: event.dailyLimit);
+    final newTrip = Trip(
+        startDay: event.startDay,
+        endDay: event.endDay,
+        name: event.name,
+        dailyLimit: event.dailyLimit);
     await _repository.saveTrip(newTrip);
   }
 

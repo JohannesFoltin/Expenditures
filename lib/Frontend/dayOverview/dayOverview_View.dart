@@ -17,9 +17,7 @@ class DayOverviewPage extends StatelessWidget {
       create: (context) => DayOverviewBloc(
         context.read<Repo>(),
         BlocProvider.of<TripOverviewBloc>(context).state.trip,
-      )
-        ..add(const InitTripOverview())
-        ..add(const DayOverviewSubscriptionRequest()),
+      )..add(const DayOverviewSubscriptionRequest())..add(const InitCurrentDay()),
       child: const DayOverview(),
     );
   }
@@ -73,18 +71,16 @@ class DayOverview extends StatelessWidget {
                 centerTitle: true,
                 title: TextButton(
                     onPressed: () {
-                      _dayPicker(
-                              context,
-                              state.currentSelectedDay.day,
-                              state.trip.days.first.day,
-                              state.trip.days.last.day)
+                      _dayPicker(context, state.currentSelectedDay,
+                              state.trip.startDay, state.trip.endDay)
                           .then((value) => context
                               .read<DayOverviewBloc>()
                               .add(SelectDayFinished(day: value)));
                     },
                     child: Text(
-                        style: const TextStyle(color: Colors.black, fontSize: 22),
-                        "${DateFormat.EEEE("de").format(state.currentSelectedDay.day)} ${DateFormat("dd.MM.yyyy").format(state.currentSelectedDay.day)}"))),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
+                        "${DateFormat.EEEE("de").format(state.currentSelectedDay)} ${DateFormat("dd.MM.yyyy").format(state.currentSelectedDay)}"))),
             body: Column(
               children: [
                 Expanded(
@@ -112,11 +108,11 @@ class DayOverview extends StatelessWidget {
                             child: Column(
                               children: [
                                 if (state
-                                    .currentSelectedDay.expenditures.isEmpty)
+                                    .expendituresOnCurrentDay.isEmpty)
                                   const Center(child: Text('keine Ausgaben :)'))
                                 else
                                   for (final expenditure
-                                      in state.currentSelectedDay.expenditures)
+                                      in state.expendituresOnCurrentDay)
                                     ExpenditureView(expenditure: expenditure)
                               ],
                             ),
@@ -189,7 +185,7 @@ class DayOverview extends StatelessWidget {
       Categories category) {
     Navigator.of(context).pop();
     Navigator.of(context).push(EditExpenditureView.route(
-        day: state.currentSelectedDay, strip: state.trip, category: category));
+        currentDay: state.currentSelectedDay, strip: state.trip, category: category));
   }
 }
 
@@ -211,7 +207,7 @@ class ExpenditureView extends StatelessWidget {
       onTap: () => Navigator.of(context).push(
         EditExpenditureView.route(
           strip: state.trip,
-          day: state.currentSelectedDay,
+          currentDay: state.currentSelectedDay,
           expenditure: expenditure,
         ),
       ),

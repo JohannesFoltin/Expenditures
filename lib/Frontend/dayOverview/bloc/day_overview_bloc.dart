@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
-import 'package:flutter/material.dart';
 
-import '../../../Backend/api/models/day.dart';
 import '../../../Backend/api/models/trip.dart';
 import '../../../Backend/repo/repo.dart';
 
@@ -19,7 +16,10 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
         super(
           DayOverviewState(
             trip: trip,
-            currentSelectedDay: trip.days.first,
+            currentSelectedDay: DateTime(
+                DateTime.now().year, DateTime.now().month, DateTime.now().day,),
+            expendituresOnCurrentDay:
+                trip.getExpenditureOnDay(DateTime.now()),
           ),
         ) {
     on<IncrementCurrentDay>(_incrementCurrentDay);
@@ -28,14 +28,13 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
     on<DayOverviewSubscriptionRequest>(_onSubsciptionRequest);
     on<DeleteExpenditure>(_onDeleteExpenditure);
     on<SelectCategory>(_onSelectCategory);
-    on<InitTripOverview>(
+    on<InitCurrentDay>(
       (event, emit) {
-        final dayIndex = state.trip.days.indexWhere(
-            (element) => DateUtils.isSameDay(element.day, DateTime.now()));
-        if (dayIndex >= 0) {
-          emit(
-            state.copyWith(currentSelectedDay: state.trip.days[dayIndex]),
-          );
+        if (!_isDayInTripTime(state.currentSelectedDay)) {
+          emit(state.copyWith(
+              currentSelectedDay: state.trip.startDay,
+              expendituresOnCurrentDay:
+                  state.trip.getExpenditureOnDay(state.trip.startDay)));
         }
       },
     );
@@ -49,16 +48,14 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
       _repo.getTrips(),
       onData: (data) {
         emit(state.copyWith(dayState: DayState.loading));
-        final indTrip =
+        final tripIndex =
             data.indexWhere((element) => element.id == state.trip.id);
-        if (indTrip >= 0) {
-          final dayIndex = data[indTrip].days.indexWhere(
-              (element) => element.day == state.currentSelectedDay.day);
+        if (tripIndex >= 1) {
           return state.copyWith(
-            trip: data[indTrip],
-            currentSelectedDay: data[indTrip].days[dayIndex],
-            dayState: DayState.done,
-          );
+              dayState: DayState.done,
+              trip: data[tripIndex],
+              expendituresOnCurrentDay: data[tripIndex]
+                  .getExpenditureOnDay(state.currentSelectedDay));
         } else {
           return state.copyWith(dayState: DayState.failure);
         }
@@ -66,39 +63,52 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
     );
   }
 
+  bool _isDayInTripTime(DateTime day) {
+    return day.isAfter(state.trip.startDay.subtract(const Duration(days: 1))) &&
+        day.isBefore(state.trip.endDay.add(const Duration(days: 1)));
+  }
+
   Future<void> _selectDayFinished(
       SelectDayFinished event, Emitter<DayOverviewState> emit) async {
-    final dayIndex = state.trip.days
-        .indexWhere((element) => DateUtils.isSameDay(element.day, event.day));
-    if (dayIndex >= 0) {
+    if (_isDayInTripTime(event.day)) {
       emit(
-        state.copyWith(currentSelectedDay: state.trip.days[dayIndex]),
+        state.copyWith(
+          currentSelectedDay: event.day,
+          expendituresOnCurrentDay: state.trip.getExpenditureOnDay(event.day),
+        ),
       );
     }
   }
 
   Future<void> _incrementCurrentDay(
       IncrementCurrentDay event, Emitter<DayOverviewState> emit) async {
-    final dateIndex = state.trip.days
-        .indexWhere((element) => element == state.currentSelectedDay);
-    if ((dateIndex >= 0) && (dateIndex < state.trip.days.length)) {
-      emit(state.copyWith(currentSelectedDay: state.trip.days[dateIndex + 1]));
+    final nextDay = state.currentSelectedDay.add(const Duration(days: 1));
+    if (_isDayInTripTime(nextDay)) {
+      emit(
+        state.copyWith(
+          currentSelectedDay: nextDay,
+          expendituresOnCurrentDay: state.trip.getExpenditureOnDay(nextDay),
+        ),
+      );
     }
   }
 
   Future<void> _decrementCurrentDay(
       DecrementCurrentDay event, Emitter<DayOverviewState> emit) async {
-    final dateIndex = state.trip.days
-        .indexWhere((element) => element == state.currentSelectedDay);
-    if ((dateIndex >= 0) && (dateIndex > 0)) {
-      emit(state.copyWith(currentSelectedDay: state.trip.days[dateIndex - 1]));
+    final nextDay = state.currentSelectedDay.subtract(const Duration(days: 1));
+    if (_isDayInTripTime(nextDay)) {
+      emit(
+        state.copyWith(
+          currentSelectedDay: nextDay,
+          expendituresOnCurrentDay: state.trip.getExpenditureOnDay(nextDay),
+        ),
+      );
     }
   }
 
   Future<void> _onDeleteExpenditure(
       DeleteExpenditure event, Emitter<DayOverviewState> emit) async {
-    await _repo.deleteExpenditure(
-        state.trip, state.currentSelectedDay, event.expenditure);
+    await _repo.deleteExpenditure(state.trip, event.expenditure);
   }
 
   Future<void> _onSelectCategory(

@@ -8,11 +8,14 @@ part of 'expenditure.dart';
 
 Expenditure _$ExpenditureFromJson(Map<String, dynamic> json) => Expenditure(
       id: json['id'] as String?,
-      days: json['days'] as int? ?? 1,
+      days: (json['days'] as List<dynamic>?)
+              ?.map((e) => DateTime.parse(e as String))
+              .toList() ??
+          const [],
       category: $enumDecodeNullable(_$CategoriesEnumMap, json['category']) ??
           Categories.sonstige,
-      name: json['name'] as String? ?? "",
-      description: json['description'] as String? ?? "",
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
       value: (json['value'] as num?)?.toDouble() ?? 0.0,
       directExpenditure: json['directExpenditure'] as bool? ?? true,
       paidWithCard: json['paidWithCard'] as bool? ?? true,
@@ -27,7 +30,7 @@ Map<String, dynamic> _$ExpenditureToJson(Expenditure instance) =>
       'value': instance.value,
       'directExpenditure': instance.directExpenditure,
       'paidWithCard': instance.paidWithCard,
-      'days': instance.days,
+      'days': instance.days.map((e) => e.toIso8601String()).toList(),
     };
 
 const _$CategoriesEnumMap = {

@@ -1,5 +1,4 @@
 
-import 'package:expenditures/Backend/api/models/day.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 
@@ -12,9 +11,10 @@ abstract class Api{
 
   Future<void> deleteTrip(Trip trip);
 
-  Future<void> saveExpenditure(Trip trip,Day day,Expenditure expenditure);
+  Future<void> saveExpenditure(Trip trip,Expenditure expenditure);
 
-  Future<void> deleteExpenditure(Trip trip,Day day,Expenditure expenditure);
+  Future<void> deleteExpenditure(Trip trip,Expenditure expenditure);
 
   Trip getFirstTrip();
+
 }

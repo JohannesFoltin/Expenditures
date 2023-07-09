@@ -2,8 +2,6 @@ import 'package:expenditures/Backend/api/api.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 
-import '../api/models/day.dart';
-
 class Repo {
   final Api _tripsApi;
 
@@ -17,10 +15,12 @@ class Repo {
 
   Future<void> saveTrip(Trip trip) => _tripsApi.saveTrip(trip);
 
-  Future<void> saveExpenditure(Trip trip, Day day, Expenditure expenditure) =>
-      _tripsApi.saveExpenditure(trip, day, expenditure);
+  Future<void> saveExpenditure(Trip trip, Expenditure expenditure) =>
+      _tripsApi.saveExpenditure(trip, expenditure);
 
-  Future<void> deleteExpenditure(Trip trip, Day day, Expenditure expenditure) =>
-      _tripsApi.deleteExpenditure(trip, day, expenditure);
+  Future<void> deleteExpenditure(Trip trip, Expenditure expenditure) =>
+      _tripsApi.deleteExpenditure(trip, expenditure);
+
   Trip getFirstTrip() => _tripsApi.getFirstTrip();
+
 }

@@ -10,13 +10,6 @@ class DayOverviewSubscriptionRequest extends DayOverviewEvent{
   List<Object?> get props => [];
 }
 
-class InitTripOverview extends DayOverviewEvent{
-  const InitTripOverview();
-
-  @override
-  List<Object?> get props => [];
-
-}
 class IncrementCurrentDay extends DayOverviewEvent{
 
   const IncrementCurrentDay();
@@ -27,6 +20,13 @@ class IncrementCurrentDay extends DayOverviewEvent{
 class DecrementCurrentDay extends DayOverviewEvent{
 
   const DecrementCurrentDay();
+  @override
+  List<Object?> get props => [];
+
+}
+class InitCurrentDay extends DayOverviewEvent{
+  const InitCurrentDay();
+
   @override
   List<Object?> get props => [];
 

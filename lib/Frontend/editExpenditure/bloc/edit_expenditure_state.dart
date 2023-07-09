@@ -1,18 +1,18 @@
 part of 'edit_expenditure_bloc.dart';
-enum EditExpenditureStateEnum { onProgress, done ,failure}
+
+enum EditExpenditureStateEnum { onProgress, done, failure }
 
 class EditExpenditureState extends Equatable {
-
   const EditExpenditureState({
     required this.category,
-    this.initialExpenditure,
+    required this.currentExpenditureDay, this.initialExpenditure,
     this.status = EditExpenditureStateEnum.onProgress,
     this.name = '',
     this.description = '',
     this.value = 0,
     this.directExpenditure = true,
     this.paidWithCard = true,
-    this.days = 1
+    this.days = 1,
   });
 
   final Expenditure? initialExpenditure;
@@ -24,6 +24,7 @@ class EditExpenditureState extends Equatable {
   final bool directExpenditure;
   final bool paidWithCard;
   final int days;
+  final DateTime currentExpenditureDay;
 
   @override
   List<Object?> get props => [
@@ -35,7 +36,8 @@ class EditExpenditureState extends Equatable {
         directExpenditure,
         paidWithCard,
         category,
-        days
+        days,
+      currentExpenditureDay,
       ];
 
   EditExpenditureState copyWith({
@@ -48,6 +50,7 @@ class EditExpenditureState extends Equatable {
     bool? directExpenditure,
     bool? paidWithCard,
     int? days,
+    DateTime? currentExpenditureDay,
   }) {
     return EditExpenditureState(
       initialExpenditure: initialExpenditure ?? this.initialExpenditure,
@@ -59,6 +62,8 @@ class EditExpenditureState extends Equatable {
       directExpenditure: directExpenditure ?? this.directExpenditure,
       paidWithCard: paidWithCard ?? this.paidWithCard,
       days: days ?? this.days,
+      currentExpenditureDay:
+          currentExpenditureDay ?? this.currentExpenditureDay,
     );
   }
 }

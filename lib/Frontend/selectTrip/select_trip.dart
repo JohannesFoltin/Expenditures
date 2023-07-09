@@ -11,9 +11,9 @@ class SelectTrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => SelectTripBloc(context.read<Repo>())
-          ..add(SelectTripSubscribtionRequest()),
-        child: const SelectTripView(),
+      create: (context) => SelectTripBloc(context.read<Repo>())
+        ..add(SelectTripSubscribtionRequest()),
+      child: const SelectTripView(),
     );
   }
 }
@@ -26,36 +26,38 @@ class SelectTripView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("ell"),),
+      appBar: AppBar(
+        title: Text("ell"),
+      ),
       body: BlocBuilder<SelectTripBloc, SelectTripState>(
         //TODO Maybe more precise
 /*          buildWhen: (previous, current) =>
             previous.trips.length != current.trips.length,*/
         builder: (context, state) {
           return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                for (final trip in state.trips)
-                  TextButton(
-                      onPressed: () {
-
-                      },
-                      onLongPress: () => context
-                          .read<SelectTripBloc>()
-                          .add(DeleteTrip(toDeleteTrip: trip)),
-                      child: Text(
-                          trip.name)),
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              for (final trip in state.trips)
                 TextButton(
                     onPressed: () {
-                      context.read<SelectTripBloc>().add(AddTrip(
-                        name: "name",
-                          dailyLimit: 75,
-                          startDay: DateTime(2023, 06, 22),
-                          endDay: DateTime(2023, 07, 20)));
+                      Navigator.of(context)
+                          .push(TripOverviewView.route(trip: trip));
                     },
-                    child: const Text("Add Trip")),
-              ],
+                    onLongPress: () => context
+                        .read<SelectTripBloc>()
+                        .add(DeleteTrip(toDeleteTrip: trip)),
+                    child: Text(trip.name)),
+              TextButton(
+                  onPressed: () {
+                    context.read<SelectTripBloc>().add(AddTrip(
+                        name: "name",
+                        dailyLimit: 75,
+                        startDay: DateTime(2023, 06, 22),
+                        endDay: DateTime(2023, 07, 20)));
+                  },
+                  child: const Text("Add Trip")),
+            ],
           );
         },
       ),

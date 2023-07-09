@@ -1,4 +1,3 @@
-import 'package:expenditures/Backend/api/models/day.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
@@ -11,7 +10,7 @@ class EditExpenditureView extends StatelessWidget {
 
   static Route<void> route({
     required Trip strip,
-    required Day day,
+    required DateTime currentDay,
     Categories? category,
     Expenditure? expenditure,
   }) {
@@ -21,7 +20,7 @@ class EditExpenditureView extends StatelessWidget {
               create: (context) => EditExpenditureBloc(
                   repository: context.read<Repo>(),
                   expenditure: expenditure,
-                  day: day,
+                  currentDay: currentDay,
                   trip: strip,
               category: category),
               child: const EditExpenditureView(),

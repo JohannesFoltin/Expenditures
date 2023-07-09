@@ -3,9 +3,9 @@
 import 'dart:convert';
 
 import 'package:expenditures/Backend/api/api.dart';
-import 'package:expenditures/Backend/api/models/day.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +23,6 @@ class LocalStorageApi extends Api {
     _init();
   }
 
-
   final SharedPreferences _plugin;
 
   final _tripsStreamController = BehaviorSubject<List<Trip>>.seeded(const []);
@@ -36,7 +35,6 @@ class LocalStorageApi extends Api {
       _plugin.setString(key, value);
 
   void _init() {
-    final days = <Day>[Day(day: DateTime.utc(2004,10,09))];
     final tripsJson = _getValue(_kTripCollectionKey);
     if (tripsJson != null) {
       final trips = List<Map<dynamic, dynamic>>.from(
@@ -48,7 +46,13 @@ class LocalStorageApi extends Api {
           .toList();
       _tripsStreamController.add(trips);
     } else {
-      _tripsStreamController.add([Trip(name:'Bitte erstelle einen neunen Trip',days: days)]);
+      _tripsStreamController.add([
+        Trip(
+          startDay: DateTime(2004, 9, 10),
+          endDay: DateTime(2004, 9, 11),
+          name: 'Bitte erstelle einen neunen Trip',
+        )
+      ]);
     }
   }
 
@@ -80,40 +84,36 @@ class LocalStorageApi extends Api {
   }
 
   @override
-  Future<void> saveExpenditure(Trip trip, Day day, Expenditure expenditure) {
+  Future<void> saveExpenditure(Trip trip, Expenditure expenditure) {
     final trips = [..._tripsStreamController.value];
     final tripsIndex = _getTripIndexWithException(trips, trip);
-    final dayIndex = _getDayIndexWithException(trips[tripsIndex].days, day);
-    final expendIndex =
-        day.expenditures.indexWhere((element) => element.id == expenditure.id);
-    if (expendIndex >= 0) {
-      trips[tripsIndex].days[dayIndex].expenditures[expendIndex] = expenditure;
-    } else {
-      final expenditures = trips[tripsIndex]
-          .days[dayIndex]
-          .expenditures
-          .toList()
-        ..add(expenditure);
-      trips[tripsIndex].days[dayIndex] =
-          trips[tripsIndex].days[dayIndex].copyWith(
-                expenditures: expenditures,
-              );
+    final expenditureIndex = trips[tripsIndex]
+        .expenditures
+        .indexWhere((element) => element.id == expenditure.id);
+    if(expenditureIndex >= 0){
+      trips[tripsIndex].expenditures[expenditureIndex] = expenditure;
+    }else{
+      trips[tripsIndex] = trips[tripsIndex].copyWith(expenditures: [...trips[tripsIndex].expenditures, expenditure]);
     }
     _tripsStreamController.add(trips);
     return _setValue(_kTripCollectionKey, json.encode(trips));
   }
 
   @override
-  Future<void> deleteExpenditure(Trip trip,Day day, Expenditure expenditure){
+  Future<void> deleteExpenditure(Trip trip, Expenditure expenditure) {
     final trips = [..._tripsStreamController.value];
     final tripsIndex = _getTripIndexWithException(trips, trip);
-    final dayIndex = _getDayIndexWithException(trips[tripsIndex].days, day);
-    final expenditureIndex = _getExpenditureIndexWithException(trips[tripsIndex].days[dayIndex].expenditures, expenditure);
-    trips[tripsIndex].days[dayIndex].expenditures.removeAt(expenditureIndex);
+    final expenditureIndex = trips[tripsIndex]
+        .expenditures
+        .indexWhere((element) => element.id == expenditure.id);
 
+    if(expenditureIndex >= 0){
+      trips[tripsIndex] = trips[tripsIndex].copyWith(expenditures: [...trips[tripsIndex].expenditures]..removeAt(expenditureIndex));
+    }
     _tripsStreamController.add(trips);
     return _setValue(_kTripCollectionKey, json.encode(trips));
   }
+
   int _getTripIndexWithException(List<Trip> trips, Trip trip) {
     final tripIndex = trips.indexWhere((element) => element.id == trip.id);
     if (tripIndex >= 0) {
@@ -123,29 +123,10 @@ class LocalStorageApi extends Api {
     }
   }
 
-  int _getDayIndexWithException(List<Day> days, Day day) {
-    final dayIndex = days.indexWhere((element) => element.day == day.day);
-    if (dayIndex >= 0) {
-      return dayIndex;
-    } else {
-      throw Exception('Index not Found for Trip');
-    }
-  }
-
-  int _getExpenditureIndexWithException(
-      List<Expenditure> expenditures, Expenditure expenditure) {
-    final expenditureIndex =
-        expenditures.indexWhere((element) => element.id == expenditure.id);
-    if (expenditureIndex >= 0) {
-      return expenditureIndex;
-    } else {
-      throw Exception('Index not Found for Trip');
-    }
-  }
-
   @override
   Trip getFirstTrip() {
-     final trips = [..._tripsStreamController.value];
+    final trips = [..._tripsStreamController.value];
     return trips.first;
   }
+
 }
