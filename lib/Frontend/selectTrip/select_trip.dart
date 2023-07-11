@@ -1,5 +1,4 @@
 import 'package:expenditures/Backend/repo/repo.dart';
-import 'package:expenditures/Frontend/tripOverview/tripOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +7,8 @@ import 'bloc/select_trip_bloc.dart';
 class SelectTrip extends StatelessWidget {
   const SelectTrip({super.key});
 
-  @override
+
+ @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SelectTripBloc(context.read<Repo>())
@@ -16,6 +16,7 @@ class SelectTrip extends StatelessWidget {
       child: const SelectTripView(),
     );
   }
+
 }
 
 class SelectTripView extends StatelessWidget {
@@ -41,8 +42,8 @@ class SelectTripView extends StatelessWidget {
               for (final trip in state.trips)
                 TextButton(
                     onPressed: () {
-                      Navigator.of(context)
-                          .push(TripOverviewView.route(trip: trip));
+            /*          Navigator.of(context)
+                          .push(TripOverviewView.route(trip: trip));*/
                     },
                     onLongPress: () => context
                         .read<SelectTripBloc>()

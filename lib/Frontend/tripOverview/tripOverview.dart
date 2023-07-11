@@ -6,9 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TripOverviewView extends StatelessWidget {
-  const TripOverviewView({ super.key});
+  const TripOverviewView({required Trip trip, super.key}) : _trip = trip;
+  final Trip _trip;
 
- static Route<void> route({required Trip trip}) {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => TripOverviewCubit(
+        trip: _trip,
+      ),
+      child: const TripOverviewPage(),
+    );
+  }
+
+/* static Route<void> route({required Trip trip}) {
     return MaterialPageRoute(
       fullscreenDialog: true,
       builder: (context) => BlocProvider(
@@ -23,7 +34,7 @@ class TripOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const TripOverviewPage();
-  }
+  }*/
 }
 
 class TripOverviewPage extends StatelessWidget {
@@ -43,7 +54,6 @@ class TripOverviewPage extends StatelessWidget {
             children: const [DayOverviewPage(), StatsView()],
           ),
           bottomNavigationBar: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

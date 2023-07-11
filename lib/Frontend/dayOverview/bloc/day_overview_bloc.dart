@@ -33,9 +33,11 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
     on<InitCurrentDay>(
       (event, emit) {
         if (!_isDayInTripTime(state.currentSelectedDay)) {
+          emit(state.copyWith(dayState: DayState.loading));
           final expendituresOnDay =
               state.trip.getExpendituresOnDay(state.trip.startDay);
           emit(state.copyWith(
+              dayState: DayState.done,
               currentSelectedDay: state.trip.startDay,
               categoriesAndExpenditures:
                   _currentExpendituresToMap(expendituresOnDay),
@@ -55,9 +57,10 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
         emit(state.copyWith(dayState: DayState.loading));
         final tripIndex =
             data.indexWhere((element) => element.id == state.trip.id);
-        if (tripIndex >= 1) {
+        if (tripIndex >= 0) {
           final expenditureOnDay =
               data[tripIndex].getExpendituresOnDay(state.currentSelectedDay);
+          print(expenditureOnDay.length.toString());
           return state.copyWith(
               dayState: DayState.done,
               categoriesAndExpenditures:

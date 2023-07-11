@@ -47,10 +47,10 @@ class LocalStorageApi extends Api {
     } else {
       _tripsStreamController.add([
         Trip(
-          startDay: DateTime(2004, 9, 10),
-          endDay: DateTime(2004, 9, 11),
-          name: 'Bitte erstelle einen neuen Trip',
-        )
+            name: 'Interrail 2023',
+            dailyLimit: 75,
+            startDay: DateTime(2023, 06, 22),
+            endDay: DateTime(2023, 07, 20))
       ]);
     }
   }
@@ -89,10 +89,11 @@ class LocalStorageApi extends Api {
     final expenditureIndex = trips[tripsIndex]
         .expenditures
         .indexWhere((element) => element.id == expenditure.id);
-    if(expenditureIndex >= 0){
+    if (expenditureIndex >= 0) {
       trips[tripsIndex].expenditures[expenditureIndex] = expenditure;
-    }else{
-      trips[tripsIndex] = trips[tripsIndex].copyWith(expenditures: [...trips[tripsIndex].expenditures, expenditure]);
+    } else {
+      trips[tripsIndex] = trips[tripsIndex].copyWith(
+          expenditures: [...trips[tripsIndex].expenditures, expenditure]);
     }
     _tripsStreamController.add(trips);
     return _setValue(_kTripCollectionKey, json.encode(trips));
@@ -106,8 +107,10 @@ class LocalStorageApi extends Api {
         .expenditures
         .indexWhere((element) => element.id == expenditure.id);
 
-    if(expenditureIndex >= 0){
-      trips[tripsIndex] = trips[tripsIndex].copyWith(expenditures: [...trips[tripsIndex].expenditures]..removeAt(expenditureIndex));
+    if (expenditureIndex >= 0) {
+      trips[tripsIndex] = trips[tripsIndex].copyWith(
+          expenditures: [...trips[tripsIndex].expenditures]
+            ..removeAt(expenditureIndex));
     }
     _tripsStreamController.add(trips);
     return _setValue(_kTripCollectionKey, json.encode(trips));
@@ -127,5 +130,4 @@ class LocalStorageApi extends Api {
     final trips = [..._tripsStreamController.value];
     return trips.first;
   }
-
 }
