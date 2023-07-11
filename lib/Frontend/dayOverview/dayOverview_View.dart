@@ -86,15 +86,23 @@ class DayOverview extends StatelessWidget {
                         "${DateFormat.EEEE("de").format(state.currentSelectedDay)} ${DateFormat("dd.MM.yyyy").format(state.currentSelectedDay)}"))),
             body: Column(
               children: [
-                SizedBox(
-                  height: 50,
-                  child: Text(_getDayExpenditureValue(
-                      state.expendituresOnCurrentDay, state.trip.dailyLimit),),
+                Container(
+                  width: double.infinity,
+                  color:
+                      _getDayExpendituresValue(state.expendituresOnCurrentDay) >
+                              state.trip.dailyLimit
+                          ? Colors.red
+                          : Colors.green,
+                  child: Center(
+                    child: Text(
+                      '${_getDayExpendituresValue(state.expendituresOnCurrentDay)}€ von ${state.trip.dailyLimit}€ verbraucht.',
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: GestureDetector(
                     onHorizontalDragEnd: (details) {
-                      int sensitivity = 0;
+                      var sensitivity = 0;
                       // Swiping in right direction.
                       if (details.primaryVelocity! > sensitivity) {
                         context
@@ -137,12 +145,12 @@ class DayOverview extends StatelessWidget {
     );
   }
 
-  String _getDayExpenditureValue(List<Expenditure> expenditures, int dayLimit) {
+  double _getDayExpendituresValue(List<Expenditure> expenditures) {
     var tmp = 0.0;
     for (final expenditure in expenditures) {
       tmp = tmp + expenditure.valuePerDay;
     }
-    return (dayLimit - tmp).toString();
+    return tmp;
   }
 
   Future<dynamic> _categoriesSelector(
