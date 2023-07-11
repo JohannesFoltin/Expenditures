@@ -104,6 +104,7 @@ class EditExpenditure extends StatelessWidget {
                           .read<EditExpenditureBloc>()
                           .add(const AddDay()),
                       icon: const Icon(Icons.add)),
+                  Text(state.valuePerDay.toString())
                 ],
               ),
               TextButton(

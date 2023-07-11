@@ -1,3 +1,4 @@
+
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/dayOverview/bloc/day_overview_bloc.dart';
@@ -17,7 +18,9 @@ class DayOverviewPage extends StatelessWidget {
       create: (context) => DayOverviewBloc(
         context.read<Repo>(),
         BlocProvider.of<TripOverviewBloc>(context).state.trip,
-      )..add(const DayOverviewSubscriptionRequest())..add(const InitCurrentDay()),
+      )
+        ..add(const DayOverviewSubscriptionRequest())
+        ..add(const InitCurrentDay()),
       child: const DayOverview(),
     );
   }
@@ -107,8 +110,7 @@ class DayOverview extends StatelessWidget {
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: Column(
                               children: [
-                                if (state
-                                    .expendituresOnCurrentDay.isEmpty)
+                                if (state.expendituresOnCurrentDay.isEmpty)
                                   const Center(child: Text('keine Ausgaben :)'))
                                 else
                                   for (final expenditure
@@ -185,7 +187,9 @@ class DayOverview extends StatelessWidget {
       Categories category) {
     Navigator.of(context).pop();
     Navigator.of(context).push(EditExpenditureView.route(
-        currentDay: state.currentSelectedDay, strip: state.trip, category: category));
+        currentDay: state.currentSelectedDay,
+        strip: state.trip,
+        category: category));
   }
 }
 
@@ -224,7 +228,9 @@ class ExpenditureView extends StatelessWidget {
                     child: Text(expenditure.name)),
                 Container(
                     padding: const EdgeInsets.only(right: 15),
-                    child: Text("${expenditure.value}€")),
+                    child: Text(expenditure.days.length == 1
+                        ? '${expenditure.value}€'
+                        : '${expenditure.value / expenditure.days.length}€ *')),
               ],
             ),
           ),

@@ -13,6 +13,7 @@ class EditExpenditureState extends Equatable {
     this.directExpenditure = true,
     this.paidWithCard = true,
     this.days = 1,
+    this.valuePerDay = 0,
   });
 
   final Expenditure? initialExpenditure;
@@ -25,6 +26,7 @@ class EditExpenditureState extends Equatable {
   final bool paidWithCard;
   final int days;
   final DateTime currentExpenditureDay;
+  final double valuePerDay;
 
   @override
   List<Object?> get props => [
@@ -38,6 +40,7 @@ class EditExpenditureState extends Equatable {
         category,
         days,
       currentExpenditureDay,
+    valuePerDay,
       ];
 
   EditExpenditureState copyWith({
@@ -51,6 +54,7 @@ class EditExpenditureState extends Equatable {
     bool? paidWithCard,
     int? days,
     DateTime? currentExpenditureDay,
+    double? valuePerDay,
   }) {
     return EditExpenditureState(
       initialExpenditure: initialExpenditure ?? this.initialExpenditure,
@@ -64,6 +68,7 @@ class EditExpenditureState extends Equatable {
       days: days ?? this.days,
       currentExpenditureDay:
           currentExpenditureDay ?? this.currentExpenditureDay,
+      valuePerDay: valuePerDay ?? this.valuePerDay,
     );
   }
 }

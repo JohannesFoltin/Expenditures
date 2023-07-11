@@ -19,17 +19,22 @@ class EditExpenditureBloc
     required Categories? category,
   })  : _repository = repository,
         _trip = trip,
-        super(EditExpenditureState(
-          initialExpenditure: expenditure,
-          category: expenditure?.category ?? category ?? Categories.sonstige,
-          name: expenditure?.name ?? '',
-          description: expenditure?.description ?? '',
-          value: expenditure?.value ?? 0,
-          paidWithCard: expenditure?.paidWithCard ?? true,
-          directExpenditure: expenditure?.directExpenditure ?? true,
-          days: expenditure?.days.length ?? 1,
-          currentExpenditureDay: expenditure?.days.first ?? currentDay,
-        )) {
+        super(
+          EditExpenditureState(
+            initialExpenditure: expenditure,
+            category: expenditure?.category ?? category ?? Categories.sonstige,
+            name: expenditure?.name ?? '',
+            description: expenditure?.description ?? '',
+            value: expenditure?.value ?? 0,
+            paidWithCard: expenditure?.paidWithCard ?? true,
+            directExpenditure: expenditure?.directExpenditure ?? true,
+            days: expenditure?.days.length ?? 1,
+            currentExpenditureDay: expenditure?.days.first ?? currentDay,
+            valuePerDay: expenditure != null
+                ? expenditure.value / expenditure.days.length
+                : 0,
+          ),
+        ) {
     on<NameEdited>(_nameEdited);
     on<DescriptionEdited>(_descriptionEdited);
     on<ValueEdited>(_valueEdited);
@@ -37,19 +42,25 @@ class EditExpenditureBloc
     on<SwitchedPayedWithCard>(_switchedPayedWithCard);
     on<OnSubmitted>(_onSubmitted);
     on<AddDay>(
-      (event, emit) => emit(state.copyWith(days: state.days + 1)),
+      (event, emit) {
+        emit(state.copyWith(days: state.days + 1));
+        emit(state.copyWith(valuePerDay: state.value / state.days));
+      },
     );
     on<SubtractDay>(_onSubtractDay);
   }
 
   final Repo _repository;
   final Trip _trip;
+
   Future<void> _onSubtractDay(
       SubtractDay event, Emitter<EditExpenditureState> emit) async {
-    if(state.days > 1){
-      emit(state.copyWith(days: state.days -1));
+    if (state.days > 1) {
+      emit(state.copyWith(days: state.days - 1));
+      emit(state.copyWith(valuePerDay: state.value / state.days));
     }
   }
+
   Future<void> _nameEdited(
       NameEdited event, Emitter<EditExpenditureState> emit) async {
     emit(state.copyWith(name: event.newName));
@@ -63,6 +74,7 @@ class EditExpenditureBloc
   Future<void> _valueEdited(
       ValueEdited event, Emitter<EditExpenditureState> emit) async {
     emit(state.copyWith(value: event.newValue));
+    emit(state.copyWith(valuePerDay: state.value / state.days));
   }
 
   Future<void> _switchedDirectExpenditure(SwitchedDirectExpenditure event,
@@ -87,7 +99,7 @@ class EditExpenditureBloc
           value: state.value,
           directExpenditure: state.directExpenditure,
           paidWithCard: state.paidWithCard,
-          days: [state.currentExpenditureDay]);
+          days: [state.currentExpenditureDay],);
     } else {
       List<DateTime> days = [];
       for (var i = 0; i < state.days; i++) {
@@ -101,7 +113,7 @@ class EditExpenditureBloc
           value: state.value,
           directExpenditure: state.directExpenditure,
           paidWithCard: state.paidWithCard,
-          days: days);
+          days: days,);
     }
 
     try {
