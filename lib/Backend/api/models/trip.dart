@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 part 'trip.g.dart';

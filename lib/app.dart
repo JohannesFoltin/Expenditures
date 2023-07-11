@@ -1,6 +1,5 @@
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/selectTrip/select_trip.dart';
-import 'package:expenditures/Frontend/tripOverview/tripOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

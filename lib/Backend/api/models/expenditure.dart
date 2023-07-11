@@ -1,9 +1,8 @@
-import 'dart:ffi';
 
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'expenditure.g.dart';
 
