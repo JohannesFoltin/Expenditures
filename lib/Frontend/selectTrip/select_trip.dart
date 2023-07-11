@@ -51,7 +51,7 @@ class SelectTripView extends StatelessWidget {
               TextButton(
                   onPressed: () {
                     context.read<SelectTripBloc>().add(AddTrip(
-                        name: "name",
+                        name: 'Interrail 2023',
                         dailyLimit: 75,
                         startDay: DateTime(2023, 06, 22),
                         endDay: DateTime(2023, 07, 20)));

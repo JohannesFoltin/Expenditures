@@ -2,7 +2,7 @@ import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/dayOverview/bloc/day_overview_bloc.dart';
 import 'package:expenditures/Frontend/editExpenditure/editExpenditure_View.dart';
-import 'package:expenditures/Frontend/tripOverview/bloc/trip_overview_bloc.dart';
+import 'package:expenditures/Frontend/tripOverview/cubit/trip_overview_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -16,7 +16,7 @@ class DayOverviewPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => DayOverviewBloc(
         context.read<Repo>(),
-        BlocProvider.of<TripOverviewBloc>(context).state.trip,
+        BlocProvider.of<TripOverviewCubit>(context).state.trip,
       )
         ..add(const DayOverviewSubscriptionRequest())
         ..add(const InitCurrentDay()),

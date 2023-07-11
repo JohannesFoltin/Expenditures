@@ -49,7 +49,7 @@ class LocalStorageApi extends Api {
         Trip(
           startDay: DateTime(2004, 9, 10),
           endDay: DateTime(2004, 9, 11),
-          name: 'Bitte erstelle einen neunen Trip',
+          name: 'Bitte erstelle einen neuen Trip',
         )
       ]);
     }
