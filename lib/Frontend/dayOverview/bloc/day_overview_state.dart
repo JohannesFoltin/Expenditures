@@ -9,6 +9,7 @@ final class DayOverviewState extends Equatable {
     required this.trip,
     this.dayState = DayState.loading,
     this.selectCategory = false,
+    this.categoriesAndExpenditures = const {},
   });
 
   final DayState dayState;
@@ -16,6 +17,7 @@ final class DayOverviewState extends Equatable {
   final Trip trip;
   final bool selectCategory;
   final List<Expenditure> expendituresOnCurrentDay;
+  final Map<Categories, List<Expenditure>> categoriesAndExpenditures;
 
   @override
   List<Object?> get props => [
@@ -23,7 +25,7 @@ final class DayOverviewState extends Equatable {
         currentSelectedDay,
         dayState,
         selectCategory,
-        expendituresOnCurrentDay
+        expendituresOnCurrentDay,
       ];
 
   DayOverviewState copyWith({
@@ -32,6 +34,7 @@ final class DayOverviewState extends Equatable {
     Trip? trip,
     bool? selectCategory,
     List<Expenditure>? expendituresOnCurrentDay,
+    Map<Categories, List<Expenditure>>? categoriesAndExpenditures,
   }) {
     return DayOverviewState(
       dayState: dayState ?? this.dayState,
@@ -40,6 +43,8 @@ final class DayOverviewState extends Equatable {
       selectCategory: selectCategory ?? this.selectCategory,
       expendituresOnCurrentDay:
           expendituresOnCurrentDay ?? this.expendituresOnCurrentDay,
+      categoriesAndExpenditures:
+          categoriesAndExpenditures ?? this.categoriesAndExpenditures,
     );
   }
 }

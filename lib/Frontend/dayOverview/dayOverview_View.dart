@@ -1,4 +1,3 @@
-
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/dayOverview/bloc/day_overview_bloc.dart';
@@ -126,9 +125,20 @@ class DayOverview extends StatelessWidget {
                                 if (state.expendituresOnCurrentDay.isEmpty)
                                   const Center(child: Text('keine Ausgaben :)'))
                                 else
-                                  for (final expenditure
-                                      in state.expendituresOnCurrentDay)
-                                    ExpenditureView(expenditure: expenditure)
+                                  for (final categorie in state
+                                      .categoriesAndExpenditures.entries)
+                                    Card(
+                                      child: ExpansionTile(
+                                        title: Text('${categorie.key.name[0].toUpperCase()}${categorie.key.name.substring(1)} ${_getDayExpendituresValue(categorie.value)}€'),
+                                        children: [
+                                          for (final expenditure
+                                              in categorie.value)
+                                            ExpenditureView(
+                                              expenditure: expenditure,
+                                            )
+                                        ],
+                                      ),
+                                    )
                               ],
                             ),
                           ),
@@ -242,24 +252,23 @@ class ExpenditureView extends StatelessWidget {
           expenditure: expenditure,
         ),
       ),
-      child: Card(
-        child: SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: Text(expenditure.name)),
-                Container(
-                    padding: const EdgeInsets.only(right: 15),
-                    child: Text(expenditure.days.length == 1
-                        ? '${expenditure.valuePerDay}€'
-                        : '${expenditure.valuePerDay}€ *')),
-              ],
-            ),
+      child: Container(
+        color: Colors.white,
+        width: double.infinity,
+        height: 52,
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Text(expenditure.name)),
+              Container(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: Text(expenditure.days.length == 1
+                      ? '${expenditure.valuePerDay}€'
+                      : '${expenditure.valuePerDay}€ *')),
+            ],
           ),
         ),
       ),

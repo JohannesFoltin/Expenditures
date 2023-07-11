@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 
-import '../../../Backend/api/models/trip.dart';
-import '../../../Backend/repo/repo.dart';
+import 'package:expenditures/Backend/api/models/trip.dart';
+import 'package:expenditures/Backend/repo/repo.dart';
 
 part 'day_overview_event.dart';
 part 'day_overview_state.dart';
@@ -17,9 +17,11 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
           DayOverviewState(
             trip: trip,
             currentSelectedDay: DateTime(
-                DateTime.now().year, DateTime.now().month, DateTime.now().day,),
-            expendituresOnCurrentDay:
-                trip.getExpenditureOnDay(DateTime.now()),
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+            ),
+            expendituresOnCurrentDay: trip.getExpendituresOnDay(DateTime.now()),
           ),
         ) {
     on<IncrementCurrentDay>(_incrementCurrentDay);
@@ -31,10 +33,13 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
     on<InitCurrentDay>(
       (event, emit) {
         if (!_isDayInTripTime(state.currentSelectedDay)) {
+          final expendituresOnDay =
+              state.trip.getExpendituresOnDay(state.trip.startDay);
           emit(state.copyWith(
               currentSelectedDay: state.trip.startDay,
-              expendituresOnCurrentDay:
-                  state.trip.getExpenditureOnDay(state.trip.startDay)));
+              categoriesAndExpenditures:
+                  _currentExpendituresToMap(expendituresOnDay),
+              expendituresOnCurrentDay: expendituresOnDay));
         }
       },
     );
@@ -51,11 +56,14 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
         final tripIndex =
             data.indexWhere((element) => element.id == state.trip.id);
         if (tripIndex >= 1) {
+          final expenditureOnDay =
+              data[tripIndex].getExpendituresOnDay(state.currentSelectedDay);
           return state.copyWith(
               dayState: DayState.done,
+              categoriesAndExpenditures:
+                  _currentExpendituresToMap(expenditureOnDay),
               trip: data[tripIndex],
-              expendituresOnCurrentDay: data[tripIndex]
-                  .getExpenditureOnDay(state.currentSelectedDay));
+              expendituresOnCurrentDay: expenditureOnDay);
         } else {
           return state.copyWith(dayState: DayState.failure);
         }
@@ -71,10 +79,13 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
   Future<void> _selectDayFinished(
       SelectDayFinished event, Emitter<DayOverviewState> emit) async {
     if (_isDayInTripTime(event.day)) {
+      final expendituresOnDay = state.trip.getExpendituresOnDay(event.day);
       emit(
         state.copyWith(
           currentSelectedDay: event.day,
-          expendituresOnCurrentDay: state.trip.getExpenditureOnDay(event.day),
+          categoriesAndExpenditures:
+              _currentExpendituresToMap(expendituresOnDay),
+          expendituresOnCurrentDay: expendituresOnDay,
         ),
       );
     }
@@ -84,10 +95,13 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
       IncrementCurrentDay event, Emitter<DayOverviewState> emit) async {
     final nextDay = state.currentSelectedDay.add(const Duration(days: 1));
     if (_isDayInTripTime(nextDay)) {
+      final expendituresOnDay = state.trip.getExpendituresOnDay(nextDay);
       emit(
         state.copyWith(
           currentSelectedDay: nextDay,
-          expendituresOnCurrentDay: state.trip.getExpenditureOnDay(nextDay),
+          categoriesAndExpenditures:
+              _currentExpendituresToMap(expendituresOnDay),
+          expendituresOnCurrentDay: expendituresOnDay,
         ),
       );
     }
@@ -97,10 +111,13 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
       DecrementCurrentDay event, Emitter<DayOverviewState> emit) async {
     final nextDay = state.currentSelectedDay.subtract(const Duration(days: 1));
     if (_isDayInTripTime(nextDay)) {
+      final expendituresOnDay = state.trip.getExpendituresOnDay(nextDay);
       emit(
         state.copyWith(
           currentSelectedDay: nextDay,
-          expendituresOnCurrentDay: state.trip.getExpenditureOnDay(nextDay),
+          categoriesAndExpenditures:
+              _currentExpendituresToMap(expendituresOnDay),
+          expendituresOnCurrentDay: expendituresOnDay,
         ),
       );
     }
@@ -114,5 +131,20 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
   Future<void> _onSelectCategory(
       SelectCategory event, Emitter<DayOverviewState> emit) async {
     emit(state.copyWith(selectCategory: !state.selectCategory));
+  }
+
+  Map<Categories, List<Expenditure>> _currentExpendituresToMap(
+      List<Expenditure> expenditures) {
+    final map = <Categories, List<Expenditure>>{};
+    if (expenditures.isNotEmpty) {
+      for (final element in expenditures) {
+        if (map.containsKey(element.category)) {
+          map[element.category]!.add(element);
+        } else {
+          map[element.category] = [element];
+        }
+      }
+    }
+    return map;
   }
 }

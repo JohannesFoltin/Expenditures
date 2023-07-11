@@ -53,7 +53,7 @@ class Trip extends Equatable {
     );
   }
 
-  List<Expenditure> getExpenditureOnDay(DateTime day) {
+  List<Expenditure> getExpendituresOnDay(DateTime day) {
     //Ist noetig mit den 2 sekunden weil sonst der letzte Tag nicht erkannt wird
     if (!(day.isAfter(startDay.subtract(const Duration(seconds: 2))) &&
         day.isBefore(endDay.add(const Duration(seconds: 2))))) {
