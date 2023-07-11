@@ -25,14 +25,14 @@ class EditExpenditureBloc
             category: expenditure?.category ?? category ?? Categories.sonstige,
             name: expenditure?.name ?? '',
             description: expenditure?.description ?? '',
-            value: expenditure?.value ?? 0,
+            value: expenditure != null
+                ? expenditure.valuePerDay * expenditure.days.length
+                : 0.0,
             paidWithCard: expenditure?.paidWithCard ?? true,
             directExpenditure: expenditure?.directExpenditure ?? true,
             days: expenditure?.days.length ?? 1,
             currentExpenditureDay: expenditure?.days.first ?? currentDay,
-            valuePerDay: expenditure != null
-                ? expenditure.value / expenditure.days.length
-                : 0,
+            valuePerDay: expenditure?.valuePerDay ?? 0.0,
           ),
         ) {
     on<NameEdited>(_nameEdited);
@@ -92,28 +92,30 @@ class EditExpenditureBloc
     final Expenditure expenditure;
     if (state.days == 1) {
       expenditure = Expenditure(
-          id: state.initialExpenditure?.id,
-          category: state.category,
-          name: state.name,
-          description: state.description,
-          value: state.value,
-          directExpenditure: state.directExpenditure,
-          paidWithCard: state.paidWithCard,
-          days: [state.currentExpenditureDay],);
+        id: state.initialExpenditure?.id,
+        category: state.category,
+        name: state.name,
+        description: state.description,
+        valuePerDay: state.valuePerDay,
+        directExpenditure: state.directExpenditure,
+        paidWithCard: state.paidWithCard,
+        days: [state.currentExpenditureDay],
+      );
     } else {
       List<DateTime> days = [];
       for (var i = 0; i < state.days; i++) {
         days.add(state.currentExpenditureDay.add(Duration(days: i)));
       }
       expenditure = Expenditure(
-          id: state.initialExpenditure?.id,
-          category: state.category,
-          name: state.name,
-          description: state.description,
-          value: state.value,
-          directExpenditure: state.directExpenditure,
-          paidWithCard: state.paidWithCard,
-          days: days,);
+        id: state.initialExpenditure?.id,
+        category: state.category,
+        name: state.name,
+        description: state.description,
+        valuePerDay: state.valuePerDay,
+        directExpenditure: state.directExpenditure,
+        paidWithCard: state.paidWithCard,
+        days: days,
+      );
     }
 
     try {

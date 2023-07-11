@@ -24,7 +24,7 @@ class Expenditure extends Equatable {
     this.category = Categories.sonstige,
     this.name = '',
     this.description = '',
-    this.value = 0.0,
+    this.valuePerDay = 0.0,
     this.directExpenditure = true,
     this.paidWithCard = true,
   })  : assert(
@@ -40,7 +40,7 @@ class Expenditure extends Equatable {
   final String id;
   final String name;
   final String description;
-  final double value;
+  final double valuePerDay;
   final bool directExpenditure;
   final bool paidWithCard;
   final List<DateTime> days;
@@ -50,7 +50,7 @@ class Expenditure extends Equatable {
 
   @override
   List<Object> get props =>
-      [id, name, description, value, directExpenditure, paidWithCard,days];
+      [id, name, description, valuePerDay, directExpenditure, paidWithCard,days];
 
   Expenditure copyWith({
     Categories? category,
@@ -67,7 +67,7 @@ class Expenditure extends Equatable {
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
-      value: value ?? this.value,
+      valuePerDay: value ?? this.valuePerDay,
       directExpenditure: directExpenditure ?? this.directExpenditure,
       paidWithCard: paidWithCard ?? this.paidWithCard,
       days: days ?? this.days,

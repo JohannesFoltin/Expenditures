@@ -86,6 +86,11 @@ class DayOverview extends StatelessWidget {
                         "${DateFormat.EEEE("de").format(state.currentSelectedDay)} ${DateFormat("dd.MM.yyyy").format(state.currentSelectedDay)}"))),
             body: Column(
               children: [
+                SizedBox(
+                  height: 50,
+                  child: Text(_getDayExpenditureValue(
+                      state.expendituresOnCurrentDay, state.trip.dailyLimit),),
+                ),
                 Expanded(
                   child: GestureDetector(
                     onHorizontalDragEnd: (details) {
@@ -132,52 +137,66 @@ class DayOverview extends StatelessWidget {
     );
   }
 
+  String _getDayExpenditureValue(List<Expenditure> expenditures, int dayLimit) {
+    var tmp = 0.0;
+    for (final expenditure in expenditures) {
+      tmp = tmp + expenditure.valuePerDay;
+    }
+    return (dayLimit - tmp).toString();
+  }
+
   Future<dynamic> _categoriesSelector(
       BuildContext context, DayOverviewBloc bloc, DayOverviewState state) {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Column(
-          children: [
-            Row(
-              children: [
-                TextButton(
-                    onPressed: () {
-                      _done(context, bloc, state, Categories.essen);
-                    },
-                    child: const Text('Essen')),
-                TextButton(
-                    onPressed: () {
-                      _done(context, bloc, state, Categories.transport);
-                    },
-                    child: const Text('Transport')),
-                TextButton(
-                    onPressed: () {
-                      _done(context, bloc, state, Categories.lebensmittel);
-                    },
-                    child: const Text('Lebensmittel')),
-              ],
-            ),
-            Row(
-              children: [
-                TextButton(
-                    onPressed: () {
-                      _done(context, bloc, state, Categories.schlafen);
-                    },
-                    child: const Text('Schlafen')),
-                TextButton(
-                    onPressed: () {
-                      _done(context, bloc, state, Categories.aktivitaeten);
-                    },
-                    child: const Text('Aktivitäten')),
-                TextButton(
-                    onPressed: () {
-                      _done(context, bloc, state, Categories.sonstige);
-                    },
-                    child: const Text('Sonstiges')),
-              ],
-            ),
-          ],
+        return SizedBox(
+          height: 120,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        _done(context, bloc, state, Categories.essen);
+                      },
+                      child: const Text('Essen')),
+                  TextButton(
+                      onPressed: () {
+                        _done(context, bloc, state, Categories.transport);
+                      },
+                      child: const Text('Transport')),
+                  TextButton(
+                      onPressed: () {
+                        _done(context, bloc, state, Categories.lebensmittel);
+                      },
+                      child: const Text('Lebensmittel')),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        _done(context, bloc, state, Categories.schlafen);
+                      },
+                      child: const Text('Schlafen')),
+                  TextButton(
+                      onPressed: () {
+                        _done(context, bloc, state, Categories.aktivitaeten);
+                      },
+                      child: const Text('Aktivitäten')),
+                  TextButton(
+                      onPressed: () {
+                        _done(context, bloc, state, Categories.sonstige);
+                      },
+                      child: const Text('Sonstiges')),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
@@ -229,8 +248,8 @@ class ExpenditureView extends StatelessWidget {
                 Container(
                     padding: const EdgeInsets.only(right: 15),
                     child: Text(expenditure.days.length == 1
-                        ? '${expenditure.value}€'
-                        : '${expenditure.value / expenditure.days.length}€ *')),
+                        ? '${expenditure.valuePerDay}€'
+                        : '${expenditure.valuePerDay}€ *')),
               ],
             ),
           ),

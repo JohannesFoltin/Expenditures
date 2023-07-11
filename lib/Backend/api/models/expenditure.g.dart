@@ -16,7 +16,7 @@ Expenditure _$ExpenditureFromJson(Map<String, dynamic> json) => Expenditure(
           Categories.sonstige,
       name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      value: (json['value'] as num?)?.toDouble() ?? 0.0,
+      valuePerDay: (json['value'] as num?)?.toDouble() ?? 0.0,
       directExpenditure: json['directExpenditure'] as bool? ?? true,
       paidWithCard: json['paidWithCard'] as bool? ?? true,
     );
@@ -27,7 +27,7 @@ Map<String, dynamic> _$ExpenditureToJson(Expenditure instance) =>
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
-      'value': instance.value,
+      'value': instance.valuePerDay,
       'directExpenditure': instance.directExpenditure,
       'paidWithCard': instance.paidWithCard,
       'days': instance.days.map((e) => e.toIso8601String()).toList(),
