@@ -22,7 +22,7 @@ class EditExpenditureView extends StatelessWidget {
                   expenditure: expenditure,
                   currentDay: currentDay,
                   trip: strip,
-              category: category),
+                  category: category),
               child: const EditExpenditureView(),
             ));
   }
@@ -69,7 +69,7 @@ class EditExpenditure extends StatelessWidget {
                     .read<EditExpenditureBloc>()
                     .add(DescriptionEdited(newDescription: value)),
               ),
-              Text("Value: ${state.value}"),
+              Text('Value: ${state.value}'),
               TextField(
                 decoration: const InputDecoration(border: OutlineInputBorder()),
                 keyboardType: TextInputType.number,
@@ -77,19 +77,34 @@ class EditExpenditure extends StatelessWidget {
                     .read<EditExpenditureBloc>()
                     .add(ValueEdited(newValue: double.parse(value))),
               ),
-              const Text("Direct bezahlt?"),
+              const Text('Direct bezahlt?'),
               Switch(
                 value: state.directExpenditure,
                 onChanged: (_) => context
                     .read<EditExpenditureBloc>()
                     .add(SwitchedDirectExpenditure()),
               ),
-              const Text("Mit Karte bezahlt?"),
+              const Text('Mit Karte bezahlt?'),
               Switch(
                 value: state.paidWithCard,
                 onChanged: (_) => context
                     .read<EditExpenditureBloc>()
                     .add(SwitchedPayedWithCard()),
+              ),
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () => context
+                          .read<EditExpenditureBloc>()
+                          .add(const SubtractDay()),
+                      icon: const Icon(Icons.remove)),
+                  Text(state.days.toString()),
+                  IconButton(
+                      onPressed: () => context
+                          .read<EditExpenditureBloc>()
+                          .add(const AddDay()),
+                      icon: const Icon(Icons.add)),
+                ],
               ),
               TextButton(
                 onPressed: () {

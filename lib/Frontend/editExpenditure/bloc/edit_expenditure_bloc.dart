@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
-import 'package:flutter/material.dart';
 
 part 'edit_expenditure_event.dart';
 part 'edit_expenditure_state.dart';
@@ -37,11 +36,20 @@ class EditExpenditureBloc
     on<SwitchedDirectExpenditure>(_switchedDirectExpenditure);
     on<SwitchedPayedWithCard>(_switchedPayedWithCard);
     on<OnSubmitted>(_onSubmitted);
+    on<AddDay>(
+      (event, emit) => emit(state.copyWith(days: state.days + 1)),
+    );
+    on<SubtractDay>(_onSubtractDay);
   }
 
   final Repo _repository;
   final Trip _trip;
-
+  Future<void> _onSubtractDay(
+      SubtractDay event, Emitter<EditExpenditureState> emit) async {
+    if(state.days > 1){
+      emit(state.copyWith(days: state.days -1));
+    }
+  }
   Future<void> _nameEdited(
       NameEdited event, Emitter<EditExpenditureState> emit) async {
     emit(state.copyWith(name: event.newName));
@@ -79,8 +87,7 @@ class EditExpenditureBloc
           value: state.value,
           directExpenditure: state.directExpenditure,
           paidWithCard: state.paidWithCard,
-          days:
-             [state.currentExpenditureDay]);
+          days: [state.currentExpenditureDay]);
     } else {
       List<DateTime> days = [];
       for (var i = 0; i < state.days; i++) {
