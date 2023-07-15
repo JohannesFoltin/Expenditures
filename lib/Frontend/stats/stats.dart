@@ -32,7 +32,7 @@ class StatsWidget extends StatelessWidget {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Center(child: Text('${state.getAllExpendituresValeues()}€'))
+              Center(child: Text('${state.getAllExpendituresValeues().toStringAsFixed(2)}€'))
             ],
           ),
         );

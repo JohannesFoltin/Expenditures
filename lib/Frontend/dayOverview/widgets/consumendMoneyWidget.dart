@@ -18,7 +18,7 @@ class ConsumendMoneyWidget extends StatelessWidget {
           : Colors.green,
       child: Center(
         child: Text(
-          '${state.getDayExpendituresImportantValue(state.expendituresOnCurrentDay).toStringAsFixed(2)}€ von ${state.trip.dailyLimit}€ verbraucht. (${state.getDayExpendituresAllValue(state.expendituresOnCurrentDay).toStringAsFixed(2)})',
+          '${state.getDayExpendituresImportantValue(state.expendituresOnCurrentDay).toStringAsFixed(2)}€ von ${state.trip.dailyLimit}€ verbraucht. (${state.getDayExpendituresAllValue(state.expendituresOnCurrentDay).toStringAsFixed(2)}€)',
         ),
       ),
     );

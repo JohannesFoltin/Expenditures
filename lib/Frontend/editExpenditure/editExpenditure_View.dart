@@ -55,6 +55,16 @@ class EditExpenditure extends StatelessWidget {
           ),
           body: Column(
             children: [
+              Text('Value: ${state.value}€'),
+              TextField(
+                autofocus: true,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(border: OutlineInputBorder()),
+                keyboardType: TextInputType.number,
+                onChanged: (value) => context
+                    .read<EditExpenditureBloc>()
+                    .add(ValueEdited(newValue: double.parse(value))),
+              ),
               Text('Name: ${state.name}'),
               TextField(
                 onChanged: (value) => context
@@ -68,15 +78,6 @@ class EditExpenditure extends StatelessWidget {
                 onChanged: (value) => context
                     .read<EditExpenditureBloc>()
                     .add(DescriptionEdited(newDescription: value)),
-              ),
-              Text('Value: ${state.value}€'),
-              TextField(
-                autofocus: true,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                keyboardType: TextInputType.number,
-                onChanged: (value) => context
-                    .read<EditExpenditureBloc>()
-                    .add(ValueEdited(newValue: double.parse(value))),
               ),
               const Text('Ist die Bezahlung wichtig für den Tag?'),
               Switch(
