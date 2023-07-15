@@ -69,15 +69,16 @@ class EditExpenditure extends StatelessWidget {
                     .read<EditExpenditureBloc>()
                     .add(DescriptionEdited(newDescription: value)),
               ),
-              Text('Value: ${state.value}'),
+              Text('Value: ${state.value}€'),
               TextField(
+                autofocus: true,
                 decoration: const InputDecoration(border: OutlineInputBorder()),
                 keyboardType: TextInputType.number,
                 onChanged: (value) => context
                     .read<EditExpenditureBloc>()
                     .add(ValueEdited(newValue: double.parse(value))),
               ),
-              const Text('Direct bezahlt?'),
+              const Text('Ist die Bezahlung wichtig für den Tag?'),
               Switch(
                 value: state.directExpenditure,
                 onChanged: (_) => context
