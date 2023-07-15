@@ -1,8 +1,7 @@
 import 'package:expenditures/Backend/repo/repo.dart';
+import 'package:expenditures/Frontend/selectTrip/bloc/select_trip_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'bloc/select_trip_bloc.dart';
 
 class SelectTrip extends StatelessWidget {
   const SelectTrip({super.key});
@@ -12,7 +11,7 @@ class SelectTrip extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SelectTripBloc(context.read<Repo>())
-        ..add(SelectTripSubscribtionRequest()),
+        ..add(const SelectTripSubscribtionRequest()),
       child: const SelectTripView(),
     );
   }
@@ -37,7 +36,6 @@ class SelectTripView extends StatelessWidget {
         builder: (context, state) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               for (final trip in state.trips)
                 TextButton(

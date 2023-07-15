@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import 'widgets/widgets.dart';
+
 class DayOverviewPage extends StatelessWidget {
   const DayOverviewPage({super.key});
 
@@ -28,20 +30,6 @@ class DayOverviewPage extends StatelessWidget {
 class DayOverview extends StatelessWidget {
   const DayOverview({super.key});
 
-  Future<DateTime> _dayPicker(BuildContext context, DateTime startDay,
-      DateTime startstartDay, DateTime endDay) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: startDay,
-      firstDate: startstartDay,
-      lastDate: endDay,
-    );
-    if (picked != null) {
-      return picked;
-    } else {
-      return startDay;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,19 +73,7 @@ class DayOverview extends StatelessWidget {
                         "${DateFormat.EEEE("de").format(state.currentSelectedDay)} ${DateFormat("dd.MM.yyyy").format(state.currentSelectedDay)}"))),
             body: Column(
               children: [
-                Container(
-                  width: double.infinity,
-                  color:
-                      _getDayExpendituresValue(state.expendituresOnCurrentDay) >
-                              state.trip.dailyLimit
-                          ? Colors.red
-                          : Colors.green,
-                  child: Center(
-                    child: Text(
-                      '${_getDayExpendituresValue(state.expendituresOnCurrentDay)}€ von ${state.trip.dailyLimit}€ verbraucht.',
-                    ),
-                  ),
-                ),
+                const ConsumendMoneyWidget(),
                 Expanded(
                   child: GestureDetector(
                     onHorizontalDragEnd: (details) {
@@ -129,7 +105,8 @@ class DayOverview extends StatelessWidget {
                                       .categoriesAndExpenditures.entries)
                                     Card(
                                       child: ExpansionTile(
-                                        title: Text('${categorie.key.name[0].toUpperCase()}${categorie.key.name.substring(1)} ${_getDayExpendituresValue(categorie.value)}€'),
+                                        title: Text(
+                                            '${categorie.key.name[0].toUpperCase()}${categorie.key.name.substring(1)} ${state.getDayExpendituresAllValue(categorie.value)}€'),
                                         children: [
                                           for (final expenditure
                                               in categorie.value)
@@ -155,12 +132,19 @@ class DayOverview extends StatelessWidget {
     );
   }
 
-  double _getDayExpendituresValue(List<Expenditure> expenditures) {
-    var tmp = 0.0;
-    for (final expenditure in expenditures) {
-      tmp = tmp + expenditure.valuePerDay;
+  Future<DateTime> _dayPicker(BuildContext context, DateTime startDay,
+      DateTime startstartDay, DateTime endDay) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: startDay,
+      firstDate: startstartDay,
+      lastDate: endDay,
+    );
+    if (picked != null) {
+      return picked;
+    } else {
+      return startDay;
     }
-    return tmp;
   }
 
   Future<dynamic> _categoriesSelector(
@@ -230,48 +214,4 @@ class DayOverview extends StatelessWidget {
   }
 }
 
-class ExpenditureView extends StatelessWidget {
-  const ExpenditureView({
-    required this.expenditure,
-    super.key,
-  });
 
-  final Expenditure expenditure;
-
-  @override
-  Widget build(BuildContext context) {
-    final state = context.watch<DayOverviewBloc>().state;
-    return GestureDetector(
-      onLongPress: () => context
-          .read<DayOverviewBloc>()
-          .add(DeleteExpenditure(expenditure: expenditure)),
-      onTap: () => Navigator.of(context).push(
-        EditExpenditureView.route(
-          strip: state.trip,
-          currentDay: state.currentSelectedDay,
-          expenditure: expenditure,
-        ),
-      ),
-      child: Container(
-        color: Colors.white,
-        width: double.infinity,
-        height: 52,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Text(expenditure.name)),
-              Container(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: Text(expenditure.days.length == 1
-                      ? '${expenditure.valuePerDay}€'
-                      : '${expenditure.valuePerDay}€ *')),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

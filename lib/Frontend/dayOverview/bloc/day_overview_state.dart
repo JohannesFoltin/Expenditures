@@ -19,6 +19,24 @@ final class DayOverviewState extends Equatable {
   final List<Expenditure> expendituresOnCurrentDay;
   final Map<Categories, List<Expenditure>> categoriesAndExpenditures;
 
+  double getDayExpendituresImportantValue(List<Expenditure> expenditures) {
+    var tmp = 0.0;
+    for (final expenditure in expenditures) {
+      if(expenditure.directExpenditure){
+        tmp = tmp + expenditure.valuePerDay;
+      }
+    }
+    return tmp;
+  }
+
+  double getDayExpendituresAllValue(List<Expenditure> expenditures) {
+    var tmp = 0.0;
+    for (final expenditure in expenditures) {
+      tmp = tmp + expenditure.valuePerDay;
+    }
+    return tmp;
+  }
+
   @override
   List<Object?> get props => [
         trip,

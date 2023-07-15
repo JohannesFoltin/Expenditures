@@ -49,6 +49,7 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
 
   final Repo _repo;
 
+
   Future<void> _onSubsciptionRequest(DayOverviewSubscriptionRequest event,
       Emitter<DayOverviewState> emit) async {
     await emit.forEach<List<Trip>>(
