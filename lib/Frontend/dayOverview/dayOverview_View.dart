@@ -106,7 +106,7 @@ class DayOverview extends StatelessWidget {
                                     Card(
                                       child: ExpansionTile(
                                         title: Text(
-                                            '${categorie.key.name[0].toUpperCase()}${categorie.key.name.substring(1)} ${state.getDayExpendituresAllValue(categorie.value)}€'),
+                                            '${categorie.key.name[0].toUpperCase()}${categorie.key.name.substring(1)} ${state.getDayExpendituresAllValue(categorie.value).toStringAsFixed(2)}€'),
                                         children: [
                                           for (final expenditure
                                               in categorie.value)

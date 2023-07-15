@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="production" type="FlutterRunConfigurationType" factoryName="Flutter">
-    <option name="additionalArgs" value="--release --verbose" />
+    <option name="additionalArgs" value="--release --verbose --flavor production" />
     <option name="filePath" value="$PROJECT_DIR$/lib/app_production.dart" />
     <method v="2" />
   </configuration>
