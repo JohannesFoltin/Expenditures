@@ -32,7 +32,7 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
     on<SelectCategory>(_onSelectCategory);
     on<InitCurrentDay>(
       (event, emit) {
-        if (!_isDayInTripTime(state.currentSelectedDay)) {
+        if (!state.trip.isDayInTripTime(state.currentSelectedDay)) {
           emit(state.copyWith(dayState: DayState.loading));
           final expendituresOnDay =
               state.trip.getExpendituresOnDay(state.trip.startDay);
@@ -75,14 +75,10 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
     );
   }
 
-  bool _isDayInTripTime(DateTime day) {
-    return day.isAfter(state.trip.startDay.subtract(const Duration(days: 1))) &&
-        day.isBefore(state.trip.endDay.add(const Duration(days: 1)));
-  }
 
   Future<void> _selectDayFinished(
       SelectDayFinished event, Emitter<DayOverviewState> emit) async {
-    if (_isDayInTripTime(event.day)) {
+    if (state.trip.isDayInTripTime(event.day)) {
       final expendituresOnDay = state.trip.getExpendituresOnDay(event.day);
       emit(
         state.copyWith(
@@ -98,7 +94,7 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
   Future<void> _incrementCurrentDay(
       IncrementCurrentDay event, Emitter<DayOverviewState> emit) async {
     final nextDay = state.currentSelectedDay.add(const Duration(days: 1));
-    if (_isDayInTripTime(nextDay)) {
+    if (state.trip.isDayInTripTime(nextDay)) {
       final expendituresOnDay = state.trip.getExpendituresOnDay(nextDay);
       emit(
         state.copyWith(
@@ -114,7 +110,7 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
   Future<void> _decrementCurrentDay(
       DecrementCurrentDay event, Emitter<DayOverviewState> emit) async {
     final nextDay = state.currentSelectedDay.subtract(const Duration(days: 1));
-    if (_isDayInTripTime(nextDay)) {
+    if (state.trip.isDayInTripTime(nextDay)) {
       final expendituresOnDay = state.trip.getExpendituresOnDay(nextDay);
       emit(
         state.copyWith(

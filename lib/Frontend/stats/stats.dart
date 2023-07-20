@@ -29,11 +29,36 @@ class StatsWidget extends StatelessWidget {
     return BlocBuilder<StatsBloc, StatsState>(
       builder: (context, state) {
         return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(child: Text('${state.getAllExpendituresValeues().toStringAsFixed(2)}€'))
-            ],
+          appBar: AppBar(
+            title: Text("Stats"),
+            centerTitle: true,
+          ),
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    'Gesamt Ausgaben: \n--> ${state.allExpenditures.toStringAsFixed(2)}€'),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                    'Gesamte Direkte Ausgaben: \n--> ${state.onlyCountableExpenditures.toStringAsFixed(2)}€'),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                    'Geld pro Tag ausgegeben Durschnittlich:\n--> ${state.expendituresPerDay.toStringAsFixed(2)}€'),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                    'Ausgaben pro Categorie'),
+                for (final categorie in state.allCategoriesAndExpenditures.keys)
+                  Text(
+                      '${categorie.name[0].toUpperCase()}${categorie.name.substring(1)}:\n-->  ${state.countableCategoriesAndExpenditures[categorie]} (${state.allCategoriesAndExpenditures[categorie]})'),
+              ],
+            ),
           ),
         );
       },

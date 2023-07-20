@@ -52,7 +52,12 @@ class Trip extends Equatable {
       endDay: endDay ?? this.endDay,
     );
   }
-
+  
+  bool isDayInTripTime(DateTime day) {
+    final dayTmp = DateUtils.dateOnly(day);
+    return (dayTmp.compareTo(startDay) >= 0) &&
+        (dayTmp.compareTo(endDay) <= 0);
+  }
   List<Expenditure> getExpendituresOnDay(DateTime day) {
     //Ist noetig mit den 2 sekunden weil sonst der letzte Tag nicht erkannt wird
     if (!(day.isAfter(startDay.subtract(const Duration(seconds: 2))) &&
