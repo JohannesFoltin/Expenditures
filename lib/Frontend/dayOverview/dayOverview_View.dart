@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:expenditures/Backend/api/models/expenditure.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/dayOverview/bloc/day_overview_bloc.dart';
@@ -29,7 +31,6 @@ class DayOverviewPage extends StatelessWidget {
 
 class DayOverview extends StatelessWidget {
   const DayOverview({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +106,10 @@ class DayOverview extends StatelessWidget {
                                       .categoriesAndExpenditures.entries)
                                     Card(
                                       child: ExpansionTile(
+                                        //Workaround so every Tile is collapse
+                                        //while changing Sites
+                                        key: Key(
+                                            Random().nextDouble().toString()),
                                         title: Text(
                                             '${categorie.key.name[0].toUpperCase()}${categorie.key.name.substring(1)} ${state.getDayExpendituresAllValue(categorie.value).toStringAsFixed(2)}€'),
                                         children: [
@@ -213,5 +218,3 @@ class DayOverview extends StatelessWidget {
         category: category));
   }
 }
-
-
