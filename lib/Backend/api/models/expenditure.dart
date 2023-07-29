@@ -7,11 +7,11 @@ import 'package:uuid/uuid.dart';
 part 'expenditure.g.dart';
 
 enum Categories {
-  transport,
-  schlafen,
   essen,
-  aktivitaeten,
   lebensmittel,
+  schlafen,
+  transport,
+  aktivitaeten,
   sonstige
 }
 

@@ -15,6 +15,7 @@ abstract class Api{
 
   Future<void> deleteExpenditure(Trip trip,Expenditure expenditure);
 
-  Trip getFirstTrip();
+  Trip? getSelectedTrip();
 
+  Future<void> setTripIDFormSelectedTrip(String? tripId);
 }

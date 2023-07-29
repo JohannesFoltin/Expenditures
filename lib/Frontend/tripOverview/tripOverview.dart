@@ -19,22 +19,13 @@ class TripOverviewView extends StatelessWidget {
     );
   }
 
-/* static Route<void> route({required Trip trip}) {
+static Route<void> route({required Trip trip}) {
     return MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (context) => BlocProvider(
-        create: (context) => TripOverviewCubit(
-          trip: trip,
-        ),
-        child: const TripOverviewView(),
-      ),
+      builder: (context) => TripOverviewView(trip: trip,),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return const TripOverviewPage();
-  }*/
 }
 
 class TripOverviewPage extends StatelessWidget {

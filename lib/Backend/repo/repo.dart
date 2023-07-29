@@ -21,6 +21,8 @@ class Repo {
   Future<void> deleteExpenditure(Trip trip, Expenditure expenditure) =>
       _tripsApi.deleteExpenditure(trip, expenditure);
 
-  Trip getFirstTrip() => _tripsApi.getFirstTrip();
+  Trip? getSelectedTrip() => _tripsApi.getSelectedTrip();
 
+  Future<void> setTripIDFormSelectedTrip(String? tripId) =>
+      _tripsApi.setTripIDFormSelectedTrip(tripId);
 }

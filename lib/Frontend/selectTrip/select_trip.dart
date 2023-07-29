@@ -1,5 +1,6 @@
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/selectTrip/bloc/select_trip_bloc.dart';
+import 'package:expenditures/Frontend/tripOverview/tripOverview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,9 +31,8 @@ class SelectTripView extends StatelessWidget {
         title: Text("ell"),
       ),
       body: BlocBuilder<SelectTripBloc, SelectTripState>(
-        //TODO Maybe more precise
-/*          buildWhen: (previous, current) =>
-            previous.trips.length != current.trips.length,*/
+         buildWhen: (previous, current) =>
+            previous.trips.length != current.trips.length,
         builder: (context, state) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -40,8 +40,8 @@ class SelectTripView extends StatelessWidget {
               for (final trip in state.trips)
                 TextButton(
                     onPressed: () {
-            /*          Navigator.of(context)
-                          .push(TripOverviewView.route(trip: trip));*/
+                      Navigator.of(context)
+                          .push(TripOverviewView.route(trip: trip));
                     },
                     onLongPress: () => context
                         .read<SelectTripBloc>()

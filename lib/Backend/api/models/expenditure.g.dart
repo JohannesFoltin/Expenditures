@@ -16,7 +16,7 @@ Expenditure _$ExpenditureFromJson(Map<String, dynamic> json) => Expenditure(
           Categories.sonstige,
       name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      valuePerDay: (json['value'] as num?)?.toDouble() ?? 0.0,
+      valuePerDay: (json['valuePerDay'] as num?)?.toDouble() ?? 0.0,
       directExpenditure: json['directExpenditure'] as bool? ?? true,
       paidWithCard: json['paidWithCard'] as bool? ?? true,
     );
@@ -27,17 +27,17 @@ Map<String, dynamic> _$ExpenditureToJson(Expenditure instance) =>
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
-      'value': instance.valuePerDay,
+      'valuePerDay': instance.valuePerDay,
       'directExpenditure': instance.directExpenditure,
       'paidWithCard': instance.paidWithCard,
       'days': instance.days.map((e) => e.toIso8601String()).toList(),
     };
 
 const _$CategoriesEnumMap = {
-  Categories.transport: 'transport',
-  Categories.schlafen: 'schlafen',
   Categories.essen: 'essen',
-  Categories.aktivitaeten: 'aktivitaeten',
   Categories.lebensmittel: 'lebensmittel',
+  Categories.schlafen: 'schlafen',
+  Categories.transport: 'transport',
+  Categories.aktivitaeten: 'aktivitaeten',
   Categories.sonstige: 'sonstige',
 };

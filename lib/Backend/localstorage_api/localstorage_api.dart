@@ -4,18 +4,12 @@ import 'dart:convert';
 
 import 'package:expenditures/Backend/api/api.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
+import 'package:expenditures/Backend/api/models/settings.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// {@template local_storage_fitnessfourthausend_api}
-/// A Flutter implementation of the TrainingApi that uses local storage.
-/// {@endtemplate}
-///
-///
 class LocalStorageApi extends Api {
-  /// {@macro local_storage_fitnessfourthausend_api}
-
   LocalStorageApi({
     required SharedPreferences plugin,
   }) : _plugin = plugin {
@@ -27,6 +21,11 @@ class LocalStorageApi extends Api {
   final _tripsStreamController = BehaviorSubject<List<Trip>>.seeded(const []);
 
   static const _kTripCollectionKey = '__trips_collection_key__';
+
+  final _settingsStreamController =
+      BehaviorSubject<Settings>.seeded(const Settings());
+
+  static const _kSettingsCollectionKey = '__settings_collection_key__';
 
   String? _getValue(String key) => _plugin.getString(key);
 
@@ -44,14 +43,13 @@ class LocalStorageApi extends Api {
           )
           .toList();
       _tripsStreamController.add(trips);
-    } else {
-      _tripsStreamController.add([
-        Trip(
-            name: 'Interrail 2023',
-            dailyLimit: 75,
-            startDay: DateTime(2023, 06, 22),
-            endDay: DateTime(2023, 07, 20))
-      ]);
+    }
+
+    final settingsJson = _getValue(_kSettingsCollectionKey);
+    if (settingsJson != null) {
+      final settings = Settings.fromJson(settingsJson as Map<String, dynamic>);
+      print(settings.tripIDofSelectedTrip);
+      _settingsStreamController.add(settings);
     }
   }
 
@@ -126,8 +124,23 @@ class LocalStorageApi extends Api {
   }
 
   @override
-  Trip getFirstTrip() {
+  Trip? getSelectedTrip() {
     final trips = [..._tripsStreamController.value];
-    return trips.first;
+    final tripIndex = trips.indexWhere((element) =>
+        element.id == _settingsStreamController.value.tripIDofSelectedTrip);
+
+    if (tripIndex >= 0) {
+      return trips[tripIndex];
+    }
+
+    return null;
   }
+
+  @override
+  Future<void> setTripIDFormSelectedTrip(String? tripId) {
+    final tmpSettings = Settings(tripIDofSelectedTrip: tripId);
+    _settingsStreamController.add(tmpSettings);
+    return _setValue(_kSettingsCollectionKey, json.encode(tmpSettings));
+  }
+
 }
