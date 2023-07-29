@@ -74,10 +74,11 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     if (trip.isDayInTripTime(day)) {
       final daysDone = day.difference(trip.startDay).inDays + 1;
       return allCountableExpenditures / daysDone;
-    }else{
+    }else if (day.difference(trip.endDay).inDays > 0){
       final daysDone = trip.endDay.difference(trip.startDay).inDays + 1;
       return allCountableExpenditures / daysDone;
     }
+    return 0;
   }
 
   Map<Categories, double> _parseAllCategoriesAndExpenditures(
