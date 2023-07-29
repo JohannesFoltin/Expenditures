@@ -48,15 +48,18 @@ class StatsWidget extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                    'Geld pro Tag ausgegeben Durschnittlich:\n--> ${state.expendituresPerDay.toStringAsFixed(2)}€'),
+                    'Direkt Geld pro Tag ausgegeben Durschnittlich:\n--> ${state.expendituresPerDay.toStringAsFixed(2)}€'),
                 const SizedBox(
                   height: 10,
                 ),
                 const Text(
                     'Ausgaben pro Categorie'),
+                SizedBox(
+                  height: 5,
+                ),
                 for (final categorie in state.allCategoriesAndExpenditures.keys)
                   Text(
-                      '${categorie.name[0].toUpperCase()}${categorie.name.substring(1)}:\n-->  ${state.countableCategoriesAndExpenditures[categorie]} (${state.allCategoriesAndExpenditures[categorie]})'),
+                      '${categorie.name[0].toUpperCase()}${categorie.name.substring(1)}:\n-->  ${state.countableCategoriesAndExpenditures[categorie]?.toStringAsFixed(2)} (${state.allCategoriesAndExpenditures[categorie]?.toStringAsFixed(2)})'),
               ],
             ),
           ),
