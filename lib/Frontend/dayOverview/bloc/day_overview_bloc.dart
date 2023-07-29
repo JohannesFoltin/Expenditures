@@ -49,7 +49,6 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
 
   final Repo _repo;
 
-
   Future<void> _onSubsciptionRequest(DayOverviewSubscriptionRequest event,
       Emitter<DayOverviewState> emit) async {
     await emit.forEach<List<Trip>>(
@@ -74,7 +73,6 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
       },
     );
   }
-
 
   Future<void> _selectDayFinished(
       SelectDayFinished event, Emitter<DayOverviewState> emit) async {
@@ -144,6 +142,11 @@ class DayOverviewBloc extends Bloc<DayOverviewEvent, DayOverviewState> {
           map[element.category] = [element];
         }
       }
+      final orderedMap = <Categories, List<Expenditure>>{};
+      for (var element in Categories.values.where(map.containsKey)){
+        orderedMap[element] = map[element]!;
+      }
+      return orderedMap;
     }
     return map;
   }
