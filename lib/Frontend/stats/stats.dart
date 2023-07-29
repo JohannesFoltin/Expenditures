@@ -30,7 +30,7 @@ class StatsWidget extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text("Stats"),
+            title: const Text('Stats'),
             centerTitle: true,
           ),
           body: SafeArea(
@@ -48,13 +48,13 @@ class StatsWidget extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                    'Direkt Geld pro Tag ausgegeben Durschnittlich:\n--> ${state.expendituresPerDay.toStringAsFixed(2)}€'),
+                    'Direkt Geld pro Tag ausgegeben Durchschnittlich:\n--> ${state.expendituresPerDay.toStringAsFixed(2)}€'),
                 const SizedBox(
                   height: 10,
                 ),
                 const Text(
-                    'Ausgaben pro Categorie'),
-                SizedBox(
+                    'Ausgaben pro Kategorie'),
+                const SizedBox(
                   height: 5,
                 ),
                 for (final categorie in state.allCategoriesAndExpenditures.keys)
