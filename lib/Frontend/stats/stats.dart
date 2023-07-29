@@ -59,7 +59,7 @@ class StatsWidget extends StatelessWidget {
                 ),
                 for (final categorie in state.allCategoriesAndExpenditures.keys)
                   Text(
-                      '${categorie.name[0].toUpperCase()}${categorie.name.substring(1)}:\n-->  ${state.countableCategoriesAndExpenditures[categorie]?.toStringAsFixed(2)} (${state.allCategoriesAndExpenditures[categorie]?.toStringAsFixed(2)})'),
+                      '${categorie.name[0].toUpperCase()}${categorie.name.substring(1)}:\n-->  ${state.countableCategoriesAndExpenditures[categorie]?.toStringAsFixed(2)}€ (${state.allCategoriesAndExpenditures[categorie]?.toStringAsFixed(2)}€)'),
               ],
             ),
           ),
