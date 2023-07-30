@@ -74,7 +74,7 @@ class SelectTripView extends StatelessWidget {
     );
   }
 
-  void _dayPicker(BuildContext context, SelectTripBloc bloc) async {
+  Future<void> _dayPicker(BuildContext context, SelectTripBloc bloc) async {
     await showDateRangePicker(
             context: context,
             saveText: "Weiter",
@@ -84,7 +84,7 @@ class SelectTripView extends StatelessWidget {
         .then((value) => _tripEditor(context, bloc, value!));
   }
 
-  void _tripEditor(
+  Future<void> _tripEditor(
       BuildContext context, SelectTripBloc bloc, DateTimeRange range) async {
     var name = '';
     var dailyLimit = 0;
@@ -108,7 +108,7 @@ class SelectTripView extends StatelessWidget {
                 onChanged: (value) => name = value,
                 decoration: const InputDecoration(border: OutlineInputBorder()),
               ),
-              const Text("Tägliches Limit:"),
+              const Text('Tägliches Limit:'),
               TextField(
                 onChanged: (value) => dailyLimit = int.parse(value),
                 keyboardType: TextInputType.number,
