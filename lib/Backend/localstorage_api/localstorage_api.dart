@@ -68,6 +68,10 @@ class LocalStorageApi extends Api {
   Stream<List<Trip>> getTrips() => _tripsStreamController.asBroadcastStream();
 
   @override
+  Stream<Settings> getSettings() =>
+      _settingsStreamController.asBroadcastStream();
+
+  @override
   Future<void> saveTrip(Trip trip) {
     final trips = [..._tripsStreamController.value];
     final trainingIndex = trips.indexWhere((t) => t.id == trip.id);
@@ -142,5 +146,4 @@ class LocalStorageApi extends Api {
     _settingsStreamController.add(tmpSettings);
     return _setValue(_kSettingsCollectionKey, json.encode(tmpSettings));
   }
-
 }

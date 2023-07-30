@@ -1,5 +1,6 @@
 import 'package:expenditures/Backend/api/api.dart';
 import 'package:expenditures/Backend/api/models/expenditure.dart';
+import 'package:expenditures/Backend/api/models/settings.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 
 class Repo {
@@ -10,6 +11,8 @@ class Repo {
   }) : _tripsApi = api;
 
   Stream<List<Trip>> getTrips() => _tripsApi.getTrips();
+
+  Stream<Settings> getSettings() => _tripsApi.getSettings();
 
   Future<void> deleteTrip(Trip trip) => _tripsApi.deleteTrip(trip);
 
