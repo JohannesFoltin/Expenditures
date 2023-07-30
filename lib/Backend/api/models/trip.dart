@@ -26,7 +26,11 @@ class Trip extends Equatable {
   final String id;
   final String name;
   final List<Expenditure> expenditures;
+
+  //TODO change to Double
   final int dailyLimit;
+
+  //More elegant would be DateTimeRange
   final DateTime startDay;
   final DateTime endDay;
 

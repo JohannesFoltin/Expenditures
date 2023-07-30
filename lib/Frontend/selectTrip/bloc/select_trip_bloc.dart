@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 import '../../../Backend/api/models/trip.dart';
 import '../../../Backend/repo/repo.dart';
@@ -37,8 +38,8 @@ class SelectTripBloc extends Bloc<SelectTripEvent, SelectTripState> {
 
   Future<void> _addTrip(AddTrip event, Emitter<SelectTripState> emit) async {
     final newTrip = Trip(
-        startDay: event.startDay,
-        endDay: event.endDay,
+        startDay: DateUtils.dateOnly(event.range.start),
+        endDay: DateUtils.dateOnly(event.range.end),
         name: event.name,
         dailyLimit: event.dailyLimit);
     await _repository.saveTrip(newTrip);

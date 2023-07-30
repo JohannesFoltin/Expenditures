@@ -10,13 +10,11 @@ final class AddTrip extends SelectTripEvent{
 
   const AddTrip({
     required this.dailyLimit,
-    required this.startDay,
-    required this.endDay,
     required this.name,
+    required this.range,
   });
   final int dailyLimit;
-  final DateTime startDay;
-  final DateTime endDay;
+  final DateTimeRange range;
   final String name;
 }
 final class DeleteTrip extends SelectTripEvent{
