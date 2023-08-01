@@ -25,27 +25,33 @@ class SettingsView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(title: const Text('Settings')),
-          body: Column(
-            children: [
-              const Text(
-                  'Wähle einen Trip aus, der direkt gestartet wird: '),
-              Text("data"),
-              DropdownButton(
-                value: state.selectedTrip,
-                items: [null,...state.trips]
-                    .map<DropdownMenuItem<Trip?>>((Trip? value) {
-                  return DropdownMenuItem<Trip?>(
-                    value: value,
-                    child: Text(
-                      value == null ? 'Kein Fast Forward' : value.name,
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) => context
-                    .read<SettingsBloc>()
-                    .add(SelectTrip(trip: value)),
-              )
-            ],
+          body: SafeArea(
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Wähle einen Trip aus, der direkt gestartet wird: ',
+                    textAlign: TextAlign.center,
+                  ),
+                  DropdownButton(
+                    value: state.selectedTrip,
+                    items: [null, ...state.trips]
+                        .map<DropdownMenuItem<Trip?>>((Trip? value) {
+                      return DropdownMenuItem<Trip?>(
+                        value: value,
+                        child: Text(
+                          value == null ? 'Kein Fast Forward' : value.name,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) =>
+                        context.read<SettingsBloc>().add(SelectTrip(trip: value)),
+                  )
+                ],
+              ),
+            ),
           ),
         );
       },
