@@ -51,7 +51,10 @@ class DayOverview extends StatelessWidget {
                     .read<DayOverviewBloc>()
                     .add(const SelectCategory())),
             appBar: AppBar(
-                leading: const SizedBox.shrink(),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
                 actions: [
                   IconButton(
                       onPressed: () => context

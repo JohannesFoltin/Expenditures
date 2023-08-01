@@ -1,4 +1,4 @@
-
+import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/selectTrip/bloc/select_trip_bloc.dart';
 import 'package:expenditures/Frontend/settings/settings_view.dart';
@@ -30,8 +30,6 @@ class SelectTripView extends StatelessWidget {
   Widget build(BuildContext context) {
     initializeDateFormatting('de');
     return BlocBuilder<SelectTripBloc, SelectTripState>(
-      buildWhen: (previous, current) =>
-          previous.trips.length != current.trips.length,
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -42,7 +40,7 @@ class SelectTripView extends StatelessWidget {
                     Navigator.of(context)
                         .push(SettingsView.route(trips: state.trips));
                   },
-                  icon: const Icon(Icons.settings))
+                  icon: const Icon(Icons.settings)),
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
@@ -51,22 +49,40 @@ class SelectTripView extends StatelessWidget {
             },
             label: Text("Trip erstellen"),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
           body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Center(
-                  child: Text('Bitte wähle einen der folgenden Trips aus:')),
-              for (final trip in state.trips)
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .push(TripOverviewView.route(trip: trip));
-                    },
-                    onLongPress: () => context
-                        .read<SelectTripBloc>()
-                        .add(DeleteTrip(toDeleteTrip: trip)),
-                    child: Text(trip.name)),
+              Expanded(
+                child: ListView(
+                  children: [
+                    const Center(
+                        child:
+                            Text('Bitte wähle einen der folgenden Trips aus:')),
+                    for (final trip in state.trips)
+                      if (trip.endDay
+                              .compareTo(DateUtils.dateOnly(DateTime.now())) >=
+                          0)
+                        SingleTripWidget(trip: trip),
+                  ],
+                ),
+              ),
+              ExpansionTile(
+                title: Text("Vergangende Trips"),
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: ListView(
+                      children: [
+                        for (final trip in state.trips)
+                          if (trip.endDay.compareTo(
+                                  DateUtils.dateOnly(DateTime.now())) <=
+                              0)
+                            SingleTripWidget(trip: trip),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         );
@@ -78,7 +94,7 @@ class SelectTripView extends StatelessWidget {
     await showDateRangePicker(
             context: context,
             saveText: "Weiter",
-            firstDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(Duration(days: 100)),
             lastDate: DateTime.now().add(const Duration(days: 10000)),
             confirmText: "Weiter")
         .then((value) => _tripEditor(context, bloc, value!));
@@ -137,6 +153,51 @@ class SelectTripView extends StatelessWidget {
           ),
         ));
       },
+    );
+  }
+}
+
+class SingleTripWidget extends StatelessWidget {
+  const SingleTripWidget({
+    super.key,
+    required this.trip,
+  });
+
+  final Trip trip;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () =>
+          Navigator.of(context).push(TripOverviewView.route(trip: trip)),
+      child: Card(
+        child: SizedBox(
+          width: double.infinity,
+          height: 64,
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 16,
+              ),
+              SizedBox(
+                  width: 96,
+                  child: Text(
+                    trip.name,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                  )),
+              const SizedBox(width: 128,),
+              SizedBox(
+                  width: 128,
+                  child: Text(
+                    '${DateFormat("dd.MM").format(trip.startDay)} - ${DateFormat("dd.MM.yyyy").format(trip.endDay)}',
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                  )),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
