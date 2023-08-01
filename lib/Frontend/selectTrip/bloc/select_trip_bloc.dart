@@ -11,12 +11,27 @@ part 'select_trip_event.dart';
 part 'select_trip_state.dart';
 
 class SelectTripBloc extends Bloc<SelectTripEvent, SelectTripState> {
-  SelectTripBloc(Repo repository)
+  SelectTripBloc({required Repo repository})
       : _repository = repository,
-        super(const SelectTripState()) {
+        super(
+          SelectTripState(
+            //Single standing not correct. BUT is a workaround to get the
+            //BlocListener in the view class to activate when the
+            //CheckFastForward Event is emitted and the value is flipped (so
+            //now its correct)
+            fastForward: repository.getSelectedTrip() == null,
+          ),
+        ) {
     on<SelectTripSubscribtionRequest>(_onSubscriptionRequested);
     on<AddTrip>(_addTrip);
     on<DeleteTrip>(_deleteTrip);
+    on<TurnOffFastFoward>(
+      (event, emit) => emit(state.copyWith(fastForward: false)),
+    );
+    //Flips fastForward to the correct Value
+    on<CheckFastForward>((event, emit) {
+      emit(state.copyWith(fastForward: !state.fastForward));
+    },);
   }
 
   final Repo _repository;

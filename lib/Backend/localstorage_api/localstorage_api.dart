@@ -47,9 +47,9 @@ class LocalStorageApi extends Api {
 
     final settingsJson = _getValue(_kSettingsCollectionKey);
     if (settingsJson != null) {
-      final settings = Settings.fromJson(settingsJson as Map<String, dynamic>);
+      final settings = Settings.fromJson(jsonDecode(settingsJson) as Map<String, dynamic>);
       print(settings.tripIDofSelectedTrip);
-      _settingsStreamController.add(settings);
+      _settingsStreamController.add(settings as Settings);
     }
   }
 
@@ -142,6 +142,7 @@ class LocalStorageApi extends Api {
 
   @override
   Future<void> setTripIDFormSelectedTrip(String? tripId) {
+    print(tripId);
     final tmpSettings = Settings(tripIDofSelectedTrip: tripId);
     _settingsStreamController.add(tmpSettings);
     return _setValue(_kSettingsCollectionKey, json.encode(tmpSettings));

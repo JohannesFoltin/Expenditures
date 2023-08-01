@@ -11,31 +11,44 @@ class SettingsView extends StatelessWidget {
     return MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => BlocProvider(
-          create: (context) => SettingsBloc(
-              repo: context.read<Repo>(), trips: trips,)..add(Subscribe()),
-          child: const SettingsView(),
-        ));
+              create: (context) => SettingsBloc(
+                repo: context.read<Repo>(),
+                trips: trips,
+              )..add(Subscribe()),
+              child: const SettingsView(),
+            ));
   }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsBloc,SettingsState>(builder: (context, state) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Settings')),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: state.trips.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('Item: ${state.trips[index].name}'),
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(title: const Text('Settings')),
+          body: Column(
+            children: [
+              const Text(
+                  'Wähle einen Trip aus, der direkt gestartet wird: '),
+              Text("data"),
+              DropdownButton(
+                value: state.selectedTrip,
+                items: [null,...state.trips]
+                    .map<DropdownMenuItem<Trip?>>((Trip? value) {
+                  return DropdownMenuItem<Trip?>(
+                    value: value,
+                    child: Text(
+                      value == null ? 'Kein Fast Forward' : value.name,
+                    ),
                   );
-                },
-              ),
-            ),
-          ],
-        ),
-      );
-    },);
+                }).toList(),
+                onChanged: (value) => context
+                    .read<SettingsBloc>()
+                    .add(SelectTrip(trip: value)),
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }

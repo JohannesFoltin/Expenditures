@@ -24,3 +24,11 @@ final class DeleteTrip extends SelectTripEvent{
   });
   final Trip toDeleteTrip;
 }
+
+final class TurnOffFastFoward extends SelectTripEvent{
+  const TurnOffFastFoward();
+}
+
+final class CheckFastForward extends SelectTripEvent{
+
+}

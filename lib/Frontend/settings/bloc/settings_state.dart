@@ -21,7 +21,7 @@ final class SettingsState extends Equatable {
     List<Trip>? trips,
   }) {
     return SettingsState(
-      selectedTrip: selectedTrip ?? this.selectedTrip,
+      selectedTrip: selectedTrip,
       state: state ?? this.state,
       trips: trips ?? this.trips,
     );

@@ -22,11 +22,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     Subscribe event,
     Emitter<SettingsState> emit,
   ) async {
-    emit(state.copyWith(state: State.loading));
-
     await emit.forEach<Settings>(
       _repo.getSettings(),
       onData: (setting) {
+        emit(state.copyWith(state: State.loading));
         return state.copyWith(
           selectedTrip: _repo.getSelectedTrip(),
           state: State.done,
@@ -41,6 +40,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     if (event.trip != null) {
       await _repo.setTripIDFormSelectedTrip(event.trip!.id);
+      return;
     }
 
     await _repo.setTripIDFormSelectedTrip(null);

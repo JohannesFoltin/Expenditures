@@ -15,8 +15,9 @@ class SelectTrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SelectTripBloc(context.read<Repo>())
-        ..add(const SelectTripSubscribtionRequest()),
+      create: (context) => SelectTripBloc(repository: context.read<Repo>())
+        ..add(const SelectTripSubscribtionRequest())
+        ..add(CheckFastForward()),
       child: const SelectTripView(),
     );
   }
@@ -30,54 +31,68 @@ class SelectTripView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting('de');
-    return BlocBuilder<SelectTripBloc, SelectTripState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Willkommen 👋'),
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .push(SettingsView.route(trips: state.trips));
-                  },
-                  icon: const Icon(Icons.settings)),
-            ],
-          ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              _dayPicker(context, context.read<SelectTripBloc>());
-            },
-            label: Text("Trip erstellen"),
-          ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: ListView(
+    return BlocListener<SelectTripBloc, SelectTripState>(
+      listenWhen: (previous, current) =>
+          previous.fastForward != current.fastForward,
+      listener: (context, state) {
+        if (state.fastForward) {
+          Navigator.of(context).push(
+            TripOverviewView.route(
+              trip: context.read<Repo>().getSelectedTrip()!,
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<SelectTripBloc, SelectTripState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Willkommen 👋'),
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(SettingsView.route(trips: state.trips));
+                    },
+                    icon: const Icon(Icons.settings)),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () {
+                _dayPicker(context, context.read<SelectTripBloc>());
+              },
+              label: Text("Trip erstellen"),
+            ),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ListView(
+                    children: [
+                      const SizedBox(height: 12),
+                      const Center(child: Text('Wähle einen Trip aus:')),
+                      const SizedBox(height: 16),
+                      ..._tripsListCurrent(
+                          state, context.read<SelectTripBloc>())
+                    ],
+                  ),
+                ),
+                ExpansionTile(
+                  title: Text("Vergangende Trips"),
                   children: [
-                    const SizedBox(height: 12),
-                    const Center(child: Text('Wähle einen Trip aus:')),
-                    const SizedBox(height: 16),
-                    ..._tripsListCurrent(state, context.read<SelectTripBloc>())
+                    SizedBox(
+                      height: 300,
+                      child: ListView(
+                          children: _tripsListOld(
+                              state, context.read<SelectTripBloc>())),
+                    )
                   ],
                 ),
-              ),
-              ExpansionTile(
-                title: Text("Vergangende Trips"),
-                children: [
-                  SizedBox(
-                    height: 300,
-                    child: ListView(
-                        children: _tripsListOld(
-                            state, context.read<SelectTripBloc>())),
-                  )
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
