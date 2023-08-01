@@ -246,35 +246,7 @@ class SingleTripWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () =>
           Navigator.of(context).push(TripOverviewView.route(trip: trip)),
-      onLongPress: () async {
-        await showDialog<dynamic>(
-          context: context,
-          builder: (context) {
-            return Dialog(
-              child: Column(
-                children: [
-                  Text('Möchtest du wirlich ${trip.name} löschen?'),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('abbrechen'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          bloc.add(DeleteTrip(toDeleteTrip: trip));
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Löschen'),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
-        );
-      },
+      onLongPress: () => _buildDeleteDialog(context),
       child: Card(
         child: SizedBox(
           width: double.infinity,
@@ -305,6 +277,48 @@ class SingleTripWidget extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _buildDeleteDialog(BuildContext context) async {
+    await showDialog<dynamic>(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+            height: 128,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Möchtest du wirlich ${trip.name} löschen?',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Abbrechen'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        bloc.add(DeleteTrip(toDeleteTrip: trip));
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Löschen'),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
