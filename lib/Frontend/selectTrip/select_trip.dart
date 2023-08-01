@@ -1,6 +1,7 @@
 import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/selectTrip/bloc/select_trip_bloc.dart';
+import 'package:expenditures/Frontend/selectTrip/createTripCubit/create_trip_cubit.dart';
 import 'package:expenditures/Frontend/settings/settings_view.dart';
 import 'package:expenditures/Frontend/tripOverview/tripOverview.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class SelectTripView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Willkommen'),
+            title: const Text('Willkommen 👋'),
             actions: [
               IconButton(
                   onPressed: () {
@@ -55,14 +56,10 @@ class SelectTripView extends StatelessWidget {
               Expanded(
                 child: ListView(
                   children: [
-                    const Center(
-                        child:
-                            Text('Bitte wähle einen der folgenden Trips aus:')),
-                    for (final trip in state.trips)
-                      if (trip.endDay
-                              .compareTo(DateUtils.dateOnly(DateTime.now())) >=
-                          0)
-                        SingleTripWidget(trip: trip),
+                    const SizedBox(height: 12),
+                    const Center(child: Text('Wähle einen Trip aus:')),
+                    const SizedBox(height: 16),
+                    ..._tripsListCurrent(state, context.read<SelectTripBloc>())
                   ],
                 ),
               ),
@@ -72,14 +69,8 @@ class SelectTripView extends StatelessWidget {
                   SizedBox(
                     height: 300,
                     child: ListView(
-                      children: [
-                        for (final trip in state.trips)
-                          if (trip.endDay.compareTo(
-                                  DateUtils.dateOnly(DateTime.now())) <=
-                              0)
-                            SingleTripWidget(trip: trip),
-                      ],
-                    ),
+                        children: _tripsListOld(
+                            state, context.read<SelectTripBloc>())),
                   )
                 ],
               ),
@@ -88,6 +79,43 @@ class SelectTripView extends StatelessWidget {
         );
       },
     );
+  }
+
+  List<Widget> _tripsListCurrent(SelectTripState state, SelectTripBloc bloc) {
+    var trips = <Trip>[];
+    for (var value in state.trips) {
+      if (value.endDay.compareTo(DateUtils.dateOnly(DateTime.now())) >= 0) {
+        trips.add(value);
+      }
+    }
+    if (trips.isEmpty) {
+      return [
+        const Text(
+            'Derzeit keine Vorhanden. Wie wärs wenn du welche hinzufügst? 😊',
+            textAlign: TextAlign.center),
+      ];
+    }
+    return [
+      for (final trip in trips) SingleTripWidget(bloc: bloc, trip: trip),
+    ];
+  }
+
+  List<Widget> _tripsListOld(SelectTripState state, SelectTripBloc bloc) {
+    var trips = <Trip>[];
+    for (var value in state.trips) {
+      if (value.endDay.compareTo(DateUtils.dateOnly(DateTime.now())) < 0) {
+        trips.add(value);
+      }
+    }
+    if (trips.isEmpty) {
+      return [
+        const Text('Wow noch keine in der Vergangenheit? Zeit für Urlaub! ✈️',
+            textAlign: TextAlign.center),
+      ];
+    }
+    return [
+      for (final trip in trips) SingleTripWidget(bloc: bloc, trip: trip),
+    ];
   }
 
   Future<void> _dayPicker(BuildContext context, SelectTripBloc bloc) async {
@@ -102,54 +130,100 @@ class SelectTripView extends StatelessWidget {
 
   Future<void> _tripEditor(
       BuildContext context, SelectTripBloc bloc, DateTimeRange range) async {
-    var name = '';
-    var dailyLimit = 0;
-
     await showDialog<dynamic>(
       context: context,
       builder: (context) {
         return Dialog(
-            child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Trip Übersicht',
-                style: TextStyle(fontSize: 22),
-              ),
-              const Text('Name des Trips:'),
-              TextField(
-                onChanged: (value) => name = value,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-              ),
-              const Text('Tägliches Limit:'),
-              TextField(
-                onChanged: (value) => dailyLimit = int.parse(value),
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-              ),
-              Text('Vom:\n${DateFormat("dd.MM.yyyy").format(range.start)}'),
-              Text('Bis:\n${DateFormat("dd.MM.yyyy").format(range.end)}'),
-              Text('Insgesamt ${range.duration.inDays} Nächte'),
-              //TODO Feature: expenditures forecast (dailylimit*days)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Abbrechen')),
-                  TextButton(
-                      onPressed: () {
-                        bloc.add(AddTrip(
-                            dailyLimit: dailyLimit, name: name, range: range));
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Trip erstellen')),
-                ],
-              )
-            ],
+            child: BlocProvider(
+          create: (context) => CreateTripCubit(),
+          child: BlocBuilder<CreateTripCubit, CreateTripState>(
+            builder: (context, state) {
+              return Container(
+                height: 416,
+                padding: const EdgeInsets.all(24),
+                child: Center(
+                  child: ListView(
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Trip erstellen',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          const Text('Name des Trips:'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          TextField(
+                            onChanged: (value) =>
+                                context.read<CreateTripCubit>().setName(value),
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder()),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          const Text('Tägliches Limit:'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          TextField(
+                            onChanged: (value) => context
+                                .read<CreateTripCubit>()
+                                .setValuePerDay(int.parse(value)),
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder()),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                              softWrap: false,
+                              'Vom ${DateFormat("dd.MM").format(range.start)} bis ${DateFormat("dd.MM.yyyy").format(range.end)}'),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                              range.duration.inDays == 1
+                                  ? 'Insgesamt ${range.duration.inDays} Nacht, mit ca. ${state.valuePerDay * range.duration.inDays}€ kosten'
+                                  : 'Insgesamt ${range.duration.inDays} Nächte, mit ca. ${state.valuePerDay * range.duration.inDays}€ kosten'),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Abbrechen')),
+                              ElevatedButton(
+                                  onPressed: state.name.length > 1
+                                      ? () {
+                                          bloc.add(AddTrip(
+                                              dailyLimit: state.valuePerDay,
+                                              name: state.name,
+                                              range: range));
+                                          Navigator.pop(context);
+                                        }
+                                      : null,
+                                  child: const Text('Trip erstellen')),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ));
       },
@@ -159,17 +233,48 @@ class SelectTripView extends StatelessWidget {
 
 class SingleTripWidget extends StatelessWidget {
   const SingleTripWidget({
-    super.key,
     required this.trip,
+    required this.bloc,
+    super.key,
   });
 
   final Trip trip;
+  final SelectTripBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () =>
           Navigator.of(context).push(TripOverviewView.route(trip: trip)),
+      onLongPress: () async {
+        await showDialog<dynamic>(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Column(
+                children: [
+                  Text('Möchtest du wirlich ${trip.name} löschen?'),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('abbrechen'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          bloc.add(DeleteTrip(toDeleteTrip: trip));
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Löschen'),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
       child: Card(
         child: SizedBox(
           width: double.infinity,
@@ -186,7 +291,9 @@ class SingleTripWidget extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
                   )),
-              const SizedBox(width: 128,),
+              const SizedBox(
+                width: 128,
+              ),
               SizedBox(
                   width: 128,
                   child: Text(

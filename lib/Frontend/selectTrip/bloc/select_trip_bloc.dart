@@ -25,10 +25,10 @@ class SelectTripBloc extends Bloc<SelectTripEvent, SelectTripState> {
     SelectTripSubscribtionRequest event,
     Emitter<SelectTripState> emit,
   ) async {
-    emit(state.copyWith(state: State.loading));
+    emit(state.copyWith(state: STState.loading));
 
     await emit.forEach<List<Trip>>(_repository.getTrips(), onData: (trips) {
-      return state.copyWith(trips: trips, state: State.done);
+      return state.copyWith(trips: trips, state: STState.done);
     }
         // onError: (_, __) => state.copyWith(
         //   trainingEditorStatus: TrainingOverviewStatus.failure,
@@ -47,6 +47,6 @@ class SelectTripBloc extends Bloc<SelectTripEvent, SelectTripState> {
 
   Future<void> _deleteTrip(
       DeleteTrip event, Emitter<SelectTripState> emit) async {
-    _repository.deleteTrip(event.toDeleteTrip);
+    await _repository.deleteTrip(event.toDeleteTrip);
   }
 }
