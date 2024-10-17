@@ -1,3 +1,4 @@
+import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
 import 'package:expenditures/Frontend/stats/bloc/stats_bloc.dart';
 import 'package:expenditures/Frontend/tripOverview/cubit/trip_overview_cubit.dart';
@@ -24,6 +25,11 @@ class StatsWidget extends StatelessWidget {
     super.key,
   });
 
+  int calculateTripDays(Trip trip) {
+    final difference = trip.endDay.difference(trip.startDay).inDays;
+    return difference + 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<StatsBloc, StatsState>(
@@ -37,23 +43,33 @@ class StatsWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                    'Gesamt Ausgaben: \n--> ${state.allExpenditures.toStringAsFixed(2)}€'),
+                Row(
+                  children: [
+                    Container(
+                      color: state.allExpenditures >
+                              calculateTripDays(state.trip) * state.trip.dailyLimit
+                          ? Colors.red
+                          : Colors.green,
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                          'Gesamt Ausgaben: \n--> ${state.allExpenditures.toStringAsFixed(2)}€'),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                        'Gesamte Direkte Ausgaben: \n--> ${state.onlyCountableExpenditures.toStringAsFixed(2)}€'),
+                  ],
+                ),
                 const SizedBox(
                   height: 10,
                 ),
                 Text(
-                    'Gesamte Direkte Ausgaben: \n--> ${state.onlyCountableExpenditures.toStringAsFixed(2)}€'),
+                    'Direkt Geld pro Tag ausgegeben Durchschnittlich:\n--> ${state.expendituresPerDay.toStringAsFixed(2)}€ / ${state.trip.dailyLimit}€'),
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                    'Direkt Geld pro Tag ausgegeben Durchschnittlich:\n--> ${state.expendituresPerDay.toStringAsFixed(2)}€'),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                    'Ausgaben pro Kategorie'),
+                const Text('Ausgaben pro Kategorie'),
                 const SizedBox(
                   height: 5,
                 ),
