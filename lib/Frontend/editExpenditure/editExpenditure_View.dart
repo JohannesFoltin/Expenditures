@@ -54,6 +54,7 @@ class EditExpenditure extends StatelessWidget {
             title: const Text('Passe deine Ausgabe an'),
           ),
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Value: ${state.value}€'),
               TextField(
@@ -79,20 +80,23 @@ class EditExpenditure extends StatelessWidget {
                     .read<EditExpenditureBloc>()
                     .add(DescriptionEdited(newDescription: value)),
               ),
-              const Text('Ist die Bezahlung wichtig für den Tag?'),
-              Switch(
-                value: state.directExpenditure,
-                onChanged: (_) => context
-                    .read<EditExpenditureBloc>()
-                    .add(SwitchedDirectExpenditure()),
-              ),
-              const Text('Mit Karte bezahlt?'),
-              Switch(
-                value: state.paidWithCard,
-                onChanged: (_) => context
-                    .read<EditExpenditureBloc>()
-                    .add(SwitchedPayedWithCard()),
-              ),
+              Row(children: [
+                const Text('Wichtig?'),
+                Switch(
+                  value: state.directExpenditure,
+                  onChanged: (_) => context
+                      .read<EditExpenditureBloc>()
+                      .add(SwitchedDirectExpenditure()),
+                ),
+                SizedBox(width: 10),
+                const Text('Mit Karte bezahlt?'),
+                Switch(
+                  value: state.paidWithCard,
+                  onChanged: (_) => context
+                      .read<EditExpenditureBloc>()
+                      .add(SwitchedPayedWithCard()),
+                ),
+              ]),
               Row(
                 children: [
                   IconButton(

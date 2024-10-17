@@ -14,6 +14,8 @@ class Repo {
 
   Stream<Settings> getSettings() => _tripsApi.getSettings();
 
+  Future<String?> exportTrips() => _tripsApi.exportTrips();
+
   Future<void> deleteTrip(Trip trip) => _tripsApi.deleteTrip(trip);
 
   Future<void> saveTrip(Trip trip) => _tripsApi.saveTrip(trip);

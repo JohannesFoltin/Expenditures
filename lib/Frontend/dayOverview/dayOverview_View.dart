@@ -108,6 +108,8 @@ class DayOverview extends StatelessWidget {
                                   for (final categorie in state
                                       .categoriesAndExpenditures.entries)
                                     Card(
+                                      margin: const EdgeInsets.only(
+                                          left: 10, right: 10, top: 10),
                                       child: ExpansionTile(
                                         //Workaround so every Tile is collapse
                                         //while changing Sites

@@ -18,3 +18,8 @@ class SelectTrip extends SettingsEvent{
   @override
   List<Object?> get props => [trip];
 }
+
+class ExportTrips extends SettingsEvent{
+  @override
+  List<Object?> get props => [];
+}

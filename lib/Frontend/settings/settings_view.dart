@@ -46,9 +46,16 @@ class SettingsView extends StatelessWidget {
                         ),
                       );
                     }).toList(),
-                    onChanged: (value) =>
-                        context.read<SettingsBloc>().add(SelectTrip(trip: value)),
-                  )
+                    onChanged: (value) => context
+                        .read<SettingsBloc>()
+                        .add(SelectTrip(trip: value)),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.read<SettingsBloc>().add(ExportTrips()),
+                    child: const Text('Exportieren'),
+                  ),
                 ],
               ),
             ),

@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expenditures/Backend/api/models/settings.dart';
 import 'package:expenditures/Backend/api/models/trip.dart';
 import 'package:expenditures/Backend/repo/repo.dart';
+import 'package:share_plus/share_plus.dart';
 
 part 'settings_event.dart';
 part 'settings_state.dart';
@@ -14,6 +17,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             SettingsState(selectedTrip: repo.getSelectedTrip(), trips: trips)) {
     on<Subscribe>(_onSubscriptionRequested);
     on<SelectTrip>(_onSelectTrip);
+    on<ExportTrips>(_onExportTrips);
   }
 
   final Repo _repo;
@@ -44,5 +48,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     }
 
     await _repo.setTripIDFormSelectedTrip(null);
+  }
+
+  FutureOr<void> _onExportTrips(ExportTrips event, Emitter<SettingsState> emit) async{
+      final tmp = await _repo.exportTrips() ?? "No trips to export";
+      await Share.share(tmp);
   }
 }
