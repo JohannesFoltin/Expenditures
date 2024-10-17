@@ -45,6 +45,16 @@ class SwitchedPayedWithCard extends EditExpenditureEvent {
   @override
   List<Object?> get props => [];
 }
+class NewDaysValue extends EditExpenditureEvent{
+  final int newValue;
+
+  const NewDaysValue({
+    required this.newValue,
+  });
+
+  @override
+  List<Object?> get props => [newValue];
+}
 
 class AddDay extends EditExpenditureEvent{
 

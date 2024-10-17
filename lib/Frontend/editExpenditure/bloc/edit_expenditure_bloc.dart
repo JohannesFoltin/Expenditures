@@ -41,6 +41,12 @@ class EditExpenditureBloc
     on<SwitchedDirectExpenditure>(_switchedDirectExpenditure);
     on<SwitchedPayedWithCard>(_switchedPayedWithCard);
     on<OnSubmitted>(_onSubmitted);
+    on<NewDaysValue>(
+      (event, emit) {
+        emit(state.copyWith(days: event.newValue));
+        emit(state.copyWith(valuePerDay: state.value / state.days));
+      },
+    );
     on<AddDay>(
       (event, emit) {
         emit(state.copyWith(days: state.days + 1));

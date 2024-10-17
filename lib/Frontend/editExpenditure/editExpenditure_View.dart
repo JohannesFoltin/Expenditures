@@ -50,76 +50,115 @@ class EditExpenditure extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            centerTitle: true,
-            title: const Text('Passe deine Ausgabe an'),
+            leading: const SizedBox.shrink(),
+            leadingWidth: 0,
+            title: const Text('Ausgabe'),
           ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Value: ${state.value}€'),
-              TextField(
-                autofocus: true,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                keyboardType: TextInputType.number,
-                onChanged: (value) => context
-                    .read<EditExpenditureBloc>()
-                    .add(ValueEdited(newValue: double.parse(value))),
-              ),
-              Text('Name: ${state.name}'),
-              TextField(
-                onChanged: (value) => context
-                    .read<EditExpenditureBloc>()
-                    .add(NameEdited(newName: value)),
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-              ),
-              Text("Beschreibung: ${state.description}"),
-              TextField(
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                onChanged: (value) => context
-                    .read<EditExpenditureBloc>()
-                    .add(DescriptionEdited(newDescription: value)),
-              ),
-              Row(children: [
-                const Text('Wichtig?'),
-                Switch(
+          body: Container(
+            margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 5,
+                ),
+                TextField(
+                  autofocus: true,
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: '${state.value.toStringAsFixed(2)}€',
+                    prefix: Container(
+                        padding: EdgeInsets.only(right: 2),
+                        child: const Text('€')),
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) => context
+                      .read<EditExpenditureBloc>()
+                      .add(ValueEdited(newValue: double.parse(value))),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  onChanged: (value) => context
+                      .read<EditExpenditureBloc>()
+                      .add(NameEdited(newName: value)),
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: 'Name: ${state.name}'),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: 'Beschreibung: ${state.description}'),
+                  onChanged: (value) => context
+                      .read<EditExpenditureBloc>()
+                      .add(DescriptionEdited(newDescription: value)),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                CheckboxListTile(
                   value: state.directExpenditure,
                   onChanged: (_) => context
                       .read<EditExpenditureBloc>()
                       .add(SwitchedDirectExpenditure()),
+                  title: const Text('Direkt ausgegeben'),
                 ),
-                SizedBox(width: 10),
-                const Text('Mit Karte bezahlt?'),
-                Switch(
+                const SizedBox(width: 10),
+                CheckboxListTile(
+                  title: const Text('Mit Karte bezahlt'),
                   value: state.paidWithCard,
                   onChanged: (_) => context
                       .read<EditExpenditureBloc>()
                       .add(SwitchedPayedWithCard()),
                 ),
-              ]),
-              Row(
-                children: [
-                  IconButton(
-                      onPressed: () => context
-                          .read<EditExpenditureBloc>()
-                          .add(const SubtractDay()),
-                      icon: const Icon(Icons.remove)),
-                  Text(state.days.toString()),
-                  IconButton(
-                      onPressed: () => context
-                          .read<EditExpenditureBloc>()
-                          .add(const AddDay()),
-                      icon: const Icon(Icons.add)),
-                  Text(state.valuePerDay.toString())
-                ],
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<EditExpenditureBloc>().add(OnSubmitted());
-                },
-                child: const Text('Submit'),
-              ),
-            ],
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                    '${state.days} Tage, Wert pro Tag: ${state.valuePerDay.toStringAsFixed(2)}€'),
+                Slider(
+                  value: state.days.toDouble(),
+                  min: 1,
+                  max: 7,
+                  divisions: 7, // Beispiel: maximal 7 Tage
+                  label: state.days.toString(),
+                  onChanged: (double value) {
+                    context
+                        .read<EditExpenditureBloc>()
+                        .add(NewDaysValue(newValue: value.toInt()));
+                  },
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Abbrechen')),
+                    FilledButton(
+                      onPressed: () {
+                        context.read<EditExpenditureBloc>().add(OnSubmitted());
+                      },
+                      child: const Row(
+                        children: [
+                          Icon(Icons.check),
+                          SizedBox(width: 10),
+                          Text('Fertig'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

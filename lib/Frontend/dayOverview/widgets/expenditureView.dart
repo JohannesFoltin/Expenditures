@@ -40,8 +40,8 @@ class ExpenditureView extends StatelessWidget {
               Container(
                   padding: const EdgeInsets.only(right: 15),
                   child: Text(expenditure.days.length == 1
-                      ? '${expenditure.valuePerDay}€'
-                      : '${expenditure.valuePerDay}€ *')),
+                      ? '${expenditure.valuePerDay.toStringAsFixed(2)}€'
+                      : '${expenditure.valuePerDay.toStringAsFixed(2)}€ *')),
             ],
           ),
         ),
